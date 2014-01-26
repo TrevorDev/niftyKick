@@ -18,6 +18,8 @@
 		"koa-logger": "x.x",
 		"koa-route": "x.x",
 		"koa-static": "x.x",
+		"koa-session": "x.x",
+		"mysql": "x.x",
 		"swig": "x.x"
 	}
 }
