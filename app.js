@@ -1,5 +1,6 @@
 var render = require('./lib/render');
 var config = require('./lib/config');
+var userM = require('./models/user');
 var db = require('./lib/database');
 var logger = require('koa-logger');
 var router = require('koa-router');
@@ -23,14 +24,9 @@ app.get('/', index);
 app.get('/login', login);
 app.get('/public/*', serve('.'));
 
+app.post('/api/createAccount', createAccount);
+
 function *index() {
-	var conn = db.getConn();
-	conn.query('SELECT * from stock_snapshot', function(err, rows, fields) {
-  if (err) {
-  	console.log(err)
-  }
-  console.log(rows[0]);
-	});
 	this.body = yield render('index', { title: "Nifty Kick" });
 }
 
@@ -38,6 +34,10 @@ function *login() {
 	this.body = yield render('login');
 }
 
+function *createAccount() {
+	var params = yield parse(this)
+	userM.create(params.email, params.password)
+}
 
 app.listen(3006);
 console.log('Started ----------------------------------------------');
