@@ -20,6 +20,7 @@
 		"koa-static": "x.x",
 		"koa-session": "x.x",
 		"mysql": "x.x",
-		"swig": "x.x"
+		"swig": "x.x",
+		"q": "x.x"
 	}
 }

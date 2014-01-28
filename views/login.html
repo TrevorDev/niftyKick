@@ -86,8 +86,11 @@ $.ajax({
      data: $("#createAccount").serialize(), 
      success: function(data)
      {
-         //alert(data);
-     }
+        console.log(data);
+     },
+     error: function(XMLHttpRequest, textStatus, errorThrown) { 
+     		console.log($.parseJSON(XMLHttpRequest.responseText)); 
+     } 
    });
 return false; 
 });

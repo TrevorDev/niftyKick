@@ -1,7 +1,7 @@
 var render = require('./lib/render');
 var config = require('./lib/config');
-var userM = require('./models/user');
 var db = require('./lib/database');
+var jsonResp = require('./lib/jsonResp');
 var logger = require('koa-logger');
 var router = require('koa-router');
 var serve = require('koa-static');
@@ -12,19 +12,21 @@ var koa = require('koa');
 var swig = require('swig');
 var app = koa();
 
+var user = require('./controllers/user');
+
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
 
 //ROUTES
 app.keys = [config.sessionSecret];
 app.use(session());
-
+app.use(jsonResp());
 app.use(router(app));
 app.get('/', index);
 app.get('/login', login);
 app.get('/public/*', serve('.'));
 
-app.post('/api/createAccount', createAccount);
+app.post('/api/createAccount', user.createAccount);
 
 function *index() {
 	this.body = yield render('index', { title: "Nifty Kick" });
@@ -32,11 +34,6 @@ function *index() {
 
 function *login() {
 	this.body = yield render('login');
-}
-
-function *createAccount() {
-	var params = yield parse(this)
-	userM.create(params.email, params.password)
 }
 
 app.listen(3006);
