@@ -78,18 +78,20 @@
 {% block script %}
 <script>
 $("#createAccount").submit(function() {
-var url = "/api/createAccount"; 
-console.log($("#createAccount").serialize())
+var url = "/api/createAccount";
 $.ajax({
      type: "POST",
      url: url,
      data: $("#createAccount").serialize(), 
      success: function(data)
      {
-        console.log(data);
+        window.location.replace("/");
      },
-     error: function(XMLHttpRequest, textStatus, errorThrown) { 
-     		console.log($.parseJSON(XMLHttpRequest.responseText)); 
+     error: function(XMLHttpRequest, textStatus, errorThrown) {
+     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
+     		$("#errorDiv").show();
+     		$("#errorMsg").html(errMsg);
+     		console.log(errMsg)
      } 
    });
 return false; 

@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,8 +26,7 @@
   </head>
 
   <body>
-  	<!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-static-top">
+    <div class="navbar navbar-default navbar-static-top" style="margin-bottom: 0px;">
       <div class="container-wide">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -45,13 +44,14 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="/login">Login / Sign Up</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
     </div>
 
-    {% block body %}{% endblock %}
+    <div id="errorDiv" class="alert alert-warning" style="display: none">Error: <span id="errorMsg"></span></div>
 
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    {% block body %}{% endblock %}
+		<script src="/public/vendor/jquery/jquery-1.11.0.min.js"></script>
 		<script src="/public/vendor/bootstrap/js/bootstrap.js"></script>
     {% block script %}{% endblock %}
   </body>
