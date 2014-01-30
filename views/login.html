@@ -40,24 +40,24 @@
 			<div class="col-lg-6">
 				<h1>Login</h1>
 				<div style="display:inline-block;max-width:500px;width:100%;padding:50px;" id="green">
-				<form class="form-horizontal" role="form">
+				<form id="login" class="form-horizontal" role="form">
 				  <div class="form-group">
 				    <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
 				    <div class="col-sm-9">
-				      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+				      <input name="email" type="email" class="form-control" id="inputEmail3" placeholder="Email">
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
 				    <div class="col-sm-9">
-				      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+				      <input name="password" type="password" class="form-control" id="inputPassword3" placeholder="Password">
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <div class="col-sm-offset-2 col-sm-10">
 				      <div class="checkbox">
 				        <label>
-				          <input type="checkbox"> Remember me
+				          <input name="remember" type="checkbox"> Remember me
 				        </label>
 				      </div>
 				    </div>
@@ -78,11 +78,29 @@
 {% block script %}
 <script>
 $("#createAccount").submit(function() {
-var url = "/api/createAccount";
 $.ajax({
      type: "POST",
-     url: url,
+     url: "/api/createAccount",
      data: $("#createAccount").serialize(), 
+     success: function(data)
+     {
+        window.location.replace("/");
+     },
+     error: function(XMLHttpRequest, textStatus, errorThrown) {
+     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
+     		$("#errorDiv").show();
+     		$("#errorMsg").html(errMsg);
+     		console.log(errMsg)
+     } 
+   });
+return false; 
+});
+
+$("#login").submit(function() {
+$.ajax({
+     type: "POST",
+     url: "/api/login",
+     data: $("#login").serialize(), 
      success: function(data)
      {
         window.location.replace("/");
