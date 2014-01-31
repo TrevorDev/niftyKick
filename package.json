@@ -23,6 +23,9 @@
 		"mysql": "x.x",
 		"swig": "x.x",
 		"bcryptjs": "x.x",
+		"save-to": "x.x",
+		"co-fs": "x.x",
+		"co-busboy": "x.x",
 		"q": "x.x"
 	}
 }

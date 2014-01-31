@@ -67,6 +67,10 @@ html, body {
 padding: 1px 5px;
 }
 
+.btn {
+    /*background-color:#D1D1D1*/
+}
+
 .btn-primary {
     border: none;
 }
