@@ -14,6 +14,7 @@ var swig = require('swig');
 var app = koa();
 
 var user = require('./controllers/user');
+var project = require('./controllers/project');
 
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
@@ -27,12 +28,15 @@ app.get('/', index);
 app.get('/login', login);
 app.get('/logout', logout);
 app.get('/create', create);
+app.get('/project/:id', viewProject);
 app.get('/public/*', serve('.'));
 
 app.post('/api/createAccount', user.createAccount);
 app.post('/api/login', user.login);
 app.post('/api/user/fileUpload/:folderName', user.fileUpload);
 app.post('/api/user/createTempUploadFolder', user.createTempUploadFolder);
+app.post('/api/user/deleteTempFile', user.deleteTempFile);
+app.post('/api/project/create', project.create);
 
 function *index() {
 	this.body = yield render('index', commonTemplate(this.session));
@@ -44,6 +48,10 @@ function *create() {
 	}else{
 		this.redirect('/login');
 	}
+}
+
+function *viewProject() {
+	this.body = yield render('index', commonTemplate(this.session));
 }
 
 function *logout() {

@@ -7,6 +7,9 @@ var fs = require('co-fs');
 var os = require('os');
 var multiParse = require('co-busboy')
 
+var tempDir = os.tmpdir();
+var projectsDir = os.tmpdir();
+
 exports.createAccount = function *() {
 	try {
 		var params = yield parse(this)
@@ -43,15 +46,21 @@ exports.login = function *() {
 
 //UPLOADING ------------------------------------------------------------------
 exports.fileUpload = function *() {
-	var tmpdir = path.join(os.tmpdir(), this.params.folderName);
+	var tmpdir = path.join(tempDir, this.params.folderName);
 	var files = yield upload.fileUpload(this, tmpdir);
-	console.log(tmpdir);
-  this.body = files;
+  this.jsonResp(200,{message: "Uploaded",files: files});
 }
 
 exports.createTempUploadFolder = function *() {
 	var folder = dlxlib.uid();
-	var tmpdir = path.join(os.tmpdir(), folder);
+	var tmpdir = path.join(tempDir, folder);
 	yield fs.mkdir(tmpdir);
   this.jsonResp(201,{message: "Created", folderName: folder})
+}
+
+exports.deleteTempFile = function *() {
+	var params = yield parse(this);
+	console.log(path.join(tempDir, params.folder)+"/"+params.fileName);
+	yield fs.unlink(path.join(tempDir, params.folder)+"/"+params.fileName);
+	this.jsonResp(200,{message: "Deleted"});
 }
