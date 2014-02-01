@@ -1,5 +1,4 @@
 var db = require('./../lib/database');
-var mysql  = require('mysql');
 var crypto = require('./../lib/crypto');
 var Q = require('q');
 
@@ -13,7 +12,7 @@ exports.auth = Q.async(function *(email, password) {
 	var ret = (yield db.query('select password, id from user where email = ?',[email]));
 	var valid = yield crypto.compareStringHash(password, ret[0].password)
 	if(valid){
-		return valid;
+		return ret[0].id;
 	}else{
 		return 0;
 	}
