@@ -52,7 +52,8 @@
     				<div class="col-lg-8 col-lg-offset-2">
 	    				<h1>Step 3 - Upload file</h1>
 	    				<div >
-							  <form style="height:400px;width:100%;border:1px solid" action="/api/user/1/fileUpload" class="dropzone" id="dropzone">
+							  <form style="height:400px;width:100%;border:1px solid" class="dropzone" id="dropzone">
+							  	<input name="folderName" type="hidden" value="test">
 								</form>
 							</div>
 					  </div>
@@ -76,18 +77,34 @@
 {% block script %}
 <script src="./public/vendor/dropzone/dropzone.js"></script>
 <script>
-// "myAwesomeDropzone" is the camelized version of the HTML element's ID
-Dropzone.options.dropzone = {
-  paramName: "file", // The name that will be used to transfer the file
-  maxFilesize: 1000, // MB
-  addRemoveLinks: true,
-  accept: function(file, done) {
-    done();
-  },
-  complete: function() {
-    alert("fdsf")
-  }
-};
+
+$.ajax({
+     type: "POST",
+     url: "/api/user/createTempUploadFolder",
+     data: $("#createAccount").serialize(), 
+     success: function(resp)
+     {
+     	DropZoneJS();
+     	//console.log(resp.data.folderName)
+			// "myAwesomeDropzone" is the camelized version of the HTML element's ID
+			Dropzone.options.dropzone = {
+			  paramName: "file", // The name that will be used to transfer the file
+			  maxFilesize: 1000, // MB
+			  addRemoveLinks: true,
+			  url: "/api/user/fileUpload/"+resp.data.folderName,
+			  accept: function(file, done) {
+			    done();
+			  },
+			  complete: function() {
+			    //alert("fdsf")
+			  }
+			};
+     },
+     error: function(XMLHttpRequest, textStatus, errorThrown) {
+     		alert("Upload server is down");
+     		window.location.replace("/");
+     } 
+   });
 </script>
 {% endblock %}
 {% block css %}

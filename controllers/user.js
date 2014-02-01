@@ -3,7 +3,9 @@ var user = require('./../models/user');
 var upload = require('./../lib/upload');
 var dlxlib = require('./../lib/dlxlib');
 var path = require('path');
+var fs = require('co-fs');
 var os = require('os');
+var multiParse = require('co-busboy')
 
 exports.createAccount = function *() {
 	try {
@@ -39,9 +41,17 @@ exports.login = function *() {
 	}
 }
 
+//UPLOADING ------------------------------------------------------------------
 exports.fileUpload = function *() {
-	var tmpdir = path.join(os.tmpdir(), dlxlib.uid());
+	var tmpdir = path.join(os.tmpdir(), this.params.folderName);
 	var files = yield upload.fileUpload(this, tmpdir);
-	console.log(files);
+	console.log(tmpdir);
   this.body = files;
+}
+
+exports.createTempUploadFolder = function *() {
+	var folder = dlxlib.uid();
+	var tmpdir = path.join(os.tmpdir(), folder);
+	yield fs.mkdir(tmpdir);
+  this.jsonResp(201,{message: "Created", folderName: folder})
 }

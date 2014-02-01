@@ -1,4 +1,4 @@
-;(function(){
+var DropZoneJS = function(){
 
 /**
  * Require the given path.
@@ -1917,4 +1917,4 @@ if (typeof exports == "object") {
   define(function(){ return require("dropzone"); });
 } else {
   this["Dropzone"] = require("dropzone");
-}})();
+}};

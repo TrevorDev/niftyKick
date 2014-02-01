@@ -31,7 +31,8 @@ app.get('/public/*', serve('.'));
 
 app.post('/api/createAccount', user.createAccount);
 app.post('/api/login', user.login);
-app.post('/api/user/:id/fileUpload', user.fileUpload);
+app.post('/api/user/fileUpload/:folderName', user.fileUpload);
+app.post('/api/user/createTempUploadFolder', user.createTempUploadFolder);
 
 function *index() {
 	this.body = yield render('index', commonTemplate(this.session));
