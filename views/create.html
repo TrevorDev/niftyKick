@@ -124,7 +124,7 @@ $.ajax({
 
 			$("#submit").click(function(){
 				var formInfo = $("#projectInfo").serialize();
-				formInfo.folderName = resp.data.folderName;
+				formInfo = formInfo+"&folderName="+resp.data.folderName;
 				$.ajax({
 			     type: "POST",
 			     url: "/api/project/create",

@@ -26,6 +26,7 @@
 		"save-to": "x.x",
 		"co-fs": "x.x",
 		"co-busboy": "x.x",
+		"ncp": "x.x",
 		"q": "x.x"
 	}
 }

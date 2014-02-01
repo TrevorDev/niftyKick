@@ -10,7 +10,11 @@ exports.create = Q.async(function *(email, password) {
 })
 
 exports.auth = Q.async(function *(email, password) {
-	var ret = (yield db.query('select password from user where email = ?',[email]));
+	var ret = (yield db.query('select password, id from user where email = ?',[email]));
 	var valid = yield crypto.compareStringHash(password, ret[0].password)
-	return valid;
+	if(valid){
+		return valid;
+	}else{
+		return 0;
+	}
 })
