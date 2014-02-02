@@ -24,6 +24,8 @@ app.keys = [config.sessionSecret];
 app.use(session());
 app.use(jsonResp());
 app.use(router(app));
+
+//PAGE ROUTES
 app.get('/', index);
 app.get('/login', login);
 app.get('/logout', logout);
@@ -31,13 +33,19 @@ app.get('/create', create);
 app.get('/project/:id', viewProject);
 app.get('/public/*', serve('.'));
 
+//API ROUTES
 app.post('/api/createAccount', user.createAccount);
 app.post('/api/login', user.login);
-app.post('/api/user/fileUpload/:folderName', user.fileUpload);
+
 app.post('/api/user/createTempUploadFolder', user.createTempUploadFolder);
+app.post('/api/user/fileUpload/:folderName', user.fileUpload);
 app.post('/api/user/deleteTempFile', user.deleteTempFile);
+app.post('/api/user/fileUpload/projectImage/:folderName', user.projectImageUpload);
+
 app.post('/api/project/create', project.create);
 
+
+//PAGE HANDLERS
 function *index() {
 	this.body = yield render('index', commonTemplate(this.session));
 }

@@ -51,15 +51,27 @@ exports.fileUpload = function *() {
   this.jsonResp(200,{message: "Uploaded",files: files});
 }
 
+exports.projectImageUpload = function *() {
+	var tmpdir = path.join(config.tempDir, fileSys.makeSingleLevelDir(this.params.folderName));
+	var files = yield upload.fileUpload(this, path.join(tmpdir, "projectAssets"));
+  this.jsonResp(200,{message: "Uploaded",files: files});
+}
+
 exports.createTempUploadFolder = function *() {
 	var folder = dlxlib.uid();
 	var tmpdir = path.join(config.tempDir, folder);
 	yield fs.mkdir(tmpdir);
+	yield fs.mkdir(path.join(tmpdir, "projectAssets"));
   this.jsonResp(201,{message: "Created", folderName: folder})
 }
 
 exports.deleteTempFile = function *() {
 	var params = yield parse(this);
-	yield fs.unlink(path.join(config.tempDir, fileSys.makeSingleLevelDir(params.folder),fileSys.makeSingleLevelDir(params.fileName)));
+	var dirPath = path.join(config.tempDir, fileSys.makeSingleLevelDir(params.folder));
+	if(params.projectImage){
+		dirPath = path.join(dirPath, "projectAssets");
+	}
+	var filePath = path.join(dirPath, fileSys.makeSingleLevelDir(params.fileName));
+	yield fs.unlink(filePath);
 	this.jsonResp(200,{message: "Deleted"});
 }
