@@ -34,5 +34,5 @@ exports.create = function * () {
 				fileCreated = (yield fileM.create(proj.insertId, files[i]))
       }
   };
-  this.jsonResp(200,{message: "Created"})
+  this.jsonResp(200,{message: "Created",id: proj.insertId})
 }
