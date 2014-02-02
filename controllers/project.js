@@ -22,6 +22,6 @@ exports.create = function *() {
 	yield fs.mkdir(dest);
 	yield fileSys.copyFolder(src, dest);
 	console.log(params)
-	yield project.create(sessionHelper.getUserID(this.session), params.type,params.title, params.price,params.info, params.description);
+	yield project.create(sessionHelper.getUserID(this.session), params.type,params.title, params.price,params.info, params.description,params.videoLink);
 	this.jsonResp(200,{message: "Created"})
 }
