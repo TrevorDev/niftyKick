@@ -30,7 +30,8 @@ app.get('/', index);
 app.get('/login', login);
 app.get('/logout', logout);
 app.get('/create', create);
-app.get('/project/:id', viewProject);
+app.get('/project/:id', project.show);
+app.get('/project/:id/image', project.getImage);
 app.get('/public/*', serve('.'));
 
 //API ROUTES
@@ -47,19 +48,15 @@ app.post('/api/project/create', project.create);
 
 //PAGE HANDLERS
 function *index() {
-	this.body = yield render('index', commonTemplate(this.session));
+	this.body = yield render('index', sessionHelper.commonTemplate(this.session));
 }
 
 function *create() {
 	if(sessionHelper.isLoggedIn(this.session)){
-		this.body = yield render('create', commonTemplate(this.session));
+		this.body = yield render('create', sessionHelper.commonTemplate(this.session));
 	}else{
 		this.redirect('/login');
 	}
-}
-
-function *viewProject() {
-	this.body = yield render('index', commonTemplate(this.session));
 }
 
 function *logout() {
@@ -68,14 +65,10 @@ function *logout() {
 }
 
 function *login() {
-	this.body = yield render('login',commonTemplate(this.session));
+	this.body = yield render('login',sessionHelper.commonTemplate(this.session));
 }
 
-function commonTemplate(session){
-	var temp = {}
-	temp.email = sessionHelper.getEmail(session)
-	return temp
-}
+
 
 app.listen(3006);
 console.log('Started ----------------------------------------------');

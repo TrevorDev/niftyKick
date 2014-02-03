@@ -5,3 +5,13 @@ exports.create = Q.async(function *(userID, type, title, price, info, descriptio
 	var ret = (yield db.query('insert into project (user_id, type, title, price, info, description,video_link,display_image) VALUES (?, ?, ?, ?, ?, ?,?,?)',[userID, type, title, price, info, description,videoLink,displayImage]));
 	return ret;
 })
+
+exports.find = Q.async(function *(id) {
+	var ret = (yield db.query('select * from project where id = ?',[id]));
+	return ret;
+})
+
+exports.getImage = Q.async(function *(id) {
+	var ret = (yield db.query('select user_id, display_image from project where id = ?',[id]));
+	return ret;
+})
