@@ -1,4 +1,4 @@
-var DropZoneJS = function(){
+;var DropZoneJS = function(){
 
 /**
  * Require the given path.
@@ -1175,8 +1175,7 @@ require.register("dropzone/lib/dropzone.js", function(exports, require, module){
       this.files.push(file);
       file.status = Dropzone.ADDED;
       this.emit("addedfile", file);
-      //TODO????
-      //this._enqueueThumbnail(file);
+      this._enqueueThumbnail(file);
       return this.accept(file, function(error) {
         if (error) {
           file.accepted = false;

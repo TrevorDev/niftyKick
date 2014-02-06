@@ -8,39 +8,76 @@ var sessionHelper = require('./../lib/sessionHelper');
 var fs = require('co-fs');
 var render = require('./../lib/render');
 var send = require('koa-send');
+var upload = require('./../lib/upload');
 
 var projectsFolder = path.join(config.appRoot, "userFiles/projects");
 
+//UPLOADING ------------------------------------------------------------------
+
+exports.createEmptyProject = function *() {
+  if(sessionHelper.isLoggedIn(this.session)){
+    var proj = yield project.create(sessionHelper.getUserID(this.session), "", "", "0", "", "0", "0", "", project.STATUS.CREATING);
+    var userFolder = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString());
+    var projFolder = path.join(userFolder,proj.insertId.toString());
+    try{
+      yield fs.mkdir(userFolder);
+    }catch(e){
+
+    }
+    yield fs.mkdir(projFolder);
+    yield fs.mkdir(path.join(projFolder, "projectAssets"));
+    this.jsonResp(201,{message: "Created", folderName: proj.insertId.toString()})
+  }else{
+    this.jsonResp(401,{message: "Please authenticate"})
+  }
+}
+
+exports.fileUpload = function *() {
+  if(sessionHelper.isLoggedIn(this.session)){
+    var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.folderName));
+    var files = yield upload.fileUpload(this, dir);
+    this.jsonResp(200,{message: "Uploaded",files: files});
+  }else{
+    this.jsonResp(401,{message: "Please authenticate"})
+  }
+}
+
+exports.projectImageUpload = function *() {
+  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.folderName));
+  var files = yield upload.fileUpload(this, path.join(dir, "projectAssets"));
+  this.jsonResp(200,{message: "Uploaded",files: files});
+}
+
+exports.deleteTempFile = function *() {
+  var params = yield parse(this);
+  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(params.folder));
+  if(params.projectImage){
+    dir = path.join(dir, "projectAssets");
+  }
+  var filePath = path.join(dir, fileSys.makeSingleLevelDir(params.fileName));
+  yield fs.unlink(filePath);
+  this.jsonResp(200,{message: "Deleted"});
+}
+
 exports.create = function * () {
   var params = yield parse(this);
-  params.folderName = fileSys.makeSingleLevelDir(params.folderName);
-
-  //create the project
-  var src = path.join(config.tempDir, params.folderName);
-  assets = yield fs.readdir(path.join(src, "projectAssets"))
+  var src = path.join(config.tempDir, fileSys.makeSingleLevelDir(params.folderName));
+  var assets = yield fs.readdir(path.join(src, "projectAssets"))
   var displayImage = ""
   if (assets.length >= 0) {
       displayImage = assets[0];
   }
-  var proj = yield project.create(sessionHelper.getUserID(this.session), params.type, params.title, params.price, params.info, params.description, params.videoLink, displayImage);
-
-  //copy temp file to user folder
   var userFolder = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString());
   var dest = path.join(userFolder, proj.insertId.toString());
-  try {
-      yield fs.mkdir(userFolder);
-  } catch (e) {
-      //ignore if users project dir already exists
-  }
   yield fs.mkdir(dest);
   yield fileSys.copyFolder(src, dest);
-  files = yield fs.readdir(dest)
+  var files = yield fs.readdir(dest)
   for(var i = 0;i<files.length;i++) {
       if (files[i] != "projectAssets") {
 				fileCreated = (yield fileM.create(proj.insertId, files[i]))
       }
   };
-
+  var proj = yield project.create(sessionHelper.getUserID(this.session), params.type, params.title, params.price, params.info, params.description, params.videoLink, displayImage, project.STATUS.ACTIVE);
   this.jsonResp(200,{message: "Created",id: proj.insertId})
 }
 

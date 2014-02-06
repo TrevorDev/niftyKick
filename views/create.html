@@ -109,7 +109,7 @@
 
 $.ajax({
      type: "POST",
-     url: "/api/user/createTempUploadFolder",
+     url: "/api/project/createEmptyProject",
      success: function(resp)
      {
      	DropZoneJS();
@@ -117,7 +117,7 @@ $.ajax({
 			  paramName: "file",
 			  maxFilesize: 1000, // MB
 			  addRemoveLinks: true,
-			  url: "/api/user/fileUpload/"+resp.data.folderName,
+			  url: "/api/project/fileUpload/"+resp.data.folderName,
 			  accept: function(file, done) {
 			    done();
 			  },
@@ -126,7 +126,7 @@ $.ajax({
 			  removedfile: function(file) {
 			  	$.ajax({
 				     type: "POST",
-				     url: "/api/user/deleteTempFile",
+				     url: "/api/project/deleteTempFile",
 				     data: {fileName: file.name, folder: resp.data.folderName}, 
 				     success: function(resp)
 				     {
@@ -146,7 +146,7 @@ $.ajax({
 			  maxFilesize: 1, // MB
 			  addRemoveLinks: true,
 			  acceptedFiles: "image/*",
-			  url: "/api/user/fileUpload/projectImage/"+resp.data.folderName,
+			  url: "/api/project/fileUpload/projectImage/"+resp.data.folderName,
 			  accept: function(file, done) {
 			    done();
 			  },
@@ -155,7 +155,7 @@ $.ajax({
 			  removedfile: function(file) {
 			  	$.ajax({
 				     type: "POST",
-				     url: "/api/user/deleteTempFile",
+				     url: "/api/project/deleteTempFile",
 				     data: {fileName: file.name, folder: resp.data.folderName, projectImage: true}, 
 				     success: function(resp)
 				     {
@@ -167,7 +167,8 @@ $.ajax({
 	        }
 			  }
 			};
-
+			//WTF WHY DO I NEED THIS????? FUCK DROPZONE DOCS
+			Dropzone.discover()
 
 			$("#submit").click(function(){
 				var formInfo = $("#projectInfo").serialize();

@@ -38,10 +38,10 @@ app.get('/public/*', serve('.'));
 app.post('/api/createAccount', user.createAccount);
 app.post('/api/login', user.login);
 
-app.post('/api/user/createTempUploadFolder', user.createTempUploadFolder);
-app.post('/api/user/fileUpload/:folderName', user.fileUpload);
-app.post('/api/user/deleteTempFile', user.deleteTempFile);
-app.post('/api/user/fileUpload/projectImage/:folderName', user.projectImageUpload);
+app.post('/api/project/createEmptyProject', project.createEmptyProject);
+app.post('/api/project/fileUpload/:folderName', project.fileUpload);
+app.post('/api/project/deleteTempFile', project.deleteTempFile);
+app.post('/api/project/fileUpload/projectImage/:folderName', project.projectImageUpload);
 
 app.post('/api/project/create', project.create);
 
@@ -70,5 +70,5 @@ function *login() {
 
 
 
-app.listen(3006);
+app.listen(3007);
 console.log('Started ----------------------------------------------');
