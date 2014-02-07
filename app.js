@@ -31,7 +31,6 @@ app.get('/login', login);
 app.get('/logout', logout);
 app.get('/create', create);
 app.get('/project/:id', project.show);
-app.get('/project/:id/image', project.getImage);
 app.get('/public/*', serve('.'));
 
 //API ROUTES
@@ -39,11 +38,12 @@ app.post('/api/createAccount', user.createAccount);
 app.post('/api/login', user.login);
 
 app.post('/api/project/createEmptyProject', project.createEmptyProject);
-app.post('/api/project/fileUpload/:folderName', project.fileUpload);
-app.post('/api/project/deleteTempFile', project.deleteTempFile);
-app.post('/api/project/fileUpload/projectImage/:folderName', project.projectImageUpload);
+app.get('/api/project/:id/image', project.getImage);
+app.post('/api/project/:id/fileUpload', project.fileUpload);
+app.post('/api/project/:id/deleteTempFile', project.deleteTempFile);
+app.post('/api/project/:id/fileUpload/projectImage', project.projectImageUpload);
 
-app.post('/api/project/create', project.create);
+app.post('/api/project/:id/create', project.create);
 
 
 //PAGE HANDLERS

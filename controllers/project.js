@@ -26,7 +26,7 @@ exports.createEmptyProject = function *() {
     }
     yield fs.mkdir(projFolder);
     yield fs.mkdir(path.join(projFolder, "projectAssets"));
-    this.jsonResp(201,{message: "Created", folderName: proj.insertId.toString()})
+    this.jsonResp(201,{message: "Created", id: proj.insertId.toString()})
   }else{
     this.jsonResp(401,{message: "Please authenticate"})
   }
@@ -34,7 +34,7 @@ exports.createEmptyProject = function *() {
 
 exports.fileUpload = function *() {
   if(sessionHelper.isLoggedIn(this.session)){
-    var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.folderName));
+    var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.id));
     var files = yield upload.fileUpload(this, dir);
     this.jsonResp(200,{message: "Uploaded",files: files});
   }else{
@@ -43,14 +43,14 @@ exports.fileUpload = function *() {
 }
 
 exports.projectImageUpload = function *() {
-  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.folderName));
+  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.id));
   var files = yield upload.fileUpload(this, path.join(dir, "projectAssets"));
   this.jsonResp(200,{message: "Uploaded",files: files});
 }
 
 exports.deleteTempFile = function *() {
   var params = yield parse(this);
-  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(params.folder));
+  var dir = path.join(projectsFolder, sessionHelper.getUserID(this.session).toString(), fileSys.makeSingleLevelDir(this.params.id));
   if(params.projectImage){
     dir = path.join(dir, "projectAssets");
   }
@@ -61,7 +61,7 @@ exports.deleteTempFile = function *() {
 
 exports.create = function * () {
   var params = yield parse(this);
-  var src = path.join(config.tempDir, fileSys.makeSingleLevelDir(params.folderName));
+  var src = path.join(config.tempDir, fileSys.makeSingleLevelDir(this.params.id));
   var assets = yield fs.readdir(path.join(src, "projectAssets"))
   var displayImage = ""
   if (assets.length >= 0) {
@@ -78,7 +78,7 @@ exports.create = function * () {
       }
   };
   var proj = yield project.create(sessionHelper.getUserID(this.session), params.type, params.title, params.price, params.info, params.description, params.videoLink, displayImage, project.STATUS.ACTIVE);
-  this.jsonResp(200,{message: "Created",id: proj.insertId})
+  this.jsonResp(200,{message: "Created", id: proj.insertId})
 }
 
 exports.getImage = function * () {

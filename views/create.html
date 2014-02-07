@@ -117,7 +117,7 @@ $.ajax({
 			  paramName: "file",
 			  maxFilesize: 1000, // MB
 			  addRemoveLinks: true,
-			  url: "/api/project/fileUpload/"+resp.data.folderName,
+			  url: "/api/project/"+resp.data.id+"/fileUpload/",
 			  accept: function(file, done) {
 			    done();
 			  },
@@ -126,8 +126,8 @@ $.ajax({
 			  removedfile: function(file) {
 			  	$.ajax({
 				     type: "POST",
-				     url: "/api/project/deleteTempFile",
-				     data: {fileName: file.name, folder: resp.data.folderName}, 
+				     url: "/api/project/"+resp.data.id+"/deleteTempFile",
+				     data: {fileName: file.name}, 
 				     success: function(resp)
 				     {
 				     }
@@ -146,7 +146,7 @@ $.ajax({
 			  maxFilesize: 1, // MB
 			  addRemoveLinks: true,
 			  acceptedFiles: "image/*",
-			  url: "/api/project/fileUpload/projectImage/"+resp.data.folderName,
+			  url: "/api/project/"+resp.data.id+"/fileUpload/projectImage/",
 			  accept: function(file, done) {
 			    done();
 			  },
@@ -155,8 +155,8 @@ $.ajax({
 			  removedfile: function(file) {
 			  	$.ajax({
 				     type: "POST",
-				     url: "/api/project/deleteTempFile",
-				     data: {fileName: file.name, folder: resp.data.folderName, projectImage: true}, 
+				     url: "/api/project/"+resp.data.id+"/deleteTempFile",
+				     data: {fileName: file.name, projectImage: true}, 
 				     success: function(resp)
 				     {
 				     }
@@ -172,10 +172,9 @@ $.ajax({
 
 			$("#submit").click(function(){
 				var formInfo = $("#projectInfo").serialize();
-				formInfo = formInfo+"&folderName="+resp.data.folderName;
 				$.ajax({
 			     type: "POST",
-			     url: "/api/project/create",
+			     url: "/api/project/"+resp.data.id+"/create",
 			     data: formInfo, 
 			     success: function(resp)
 			     {
