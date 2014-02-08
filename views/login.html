@@ -77,41 +77,50 @@
 
 {% block script %}
 <script>
+var submitting = 0;
 $("#createAccount").submit(function() {
-$.ajax({
-     type: "POST",
-     url: "/api/createAccount",
-     data: $("#createAccount").serialize(), 
-     success: function(data)
-     {
-        window.location.replace("/");
-     },
-     error: function(XMLHttpRequest, textStatus, errorThrown) {
-     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
-     		$("#errorDiv").show();
-     		$("#errorMsg").html(errMsg);
-     		console.log(errMsg)
-     } 
-   });
+	if(!submitting){
+		submitting=1;
+		$.ajax({
+	     type: "POST",
+	     url: "/api/createAccount",
+	     data: $("#createAccount").serialize(), 
+	     success: function(data)
+	     {
+	        window.location.replace("/");
+	     },
+	     error: function(XMLHttpRequest, textStatus, errorThrown) {
+	     		submitting=0;
+	     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
+	     		$("#errorDiv").show();
+	     		$("#errorMsg").html(errMsg);
+	     		console.log(errMsg)
+	     } 
+	   });
+	}
 return false; 
 });
 
 $("#login").submit(function() {
-$.ajax({
-     type: "POST",
-     url: "/api/login",
-     data: $("#login").serialize(), 
-     success: function(data)
-     {
-        window.location.replace("/");
-     },
-     error: function(XMLHttpRequest, textStatus, errorThrown) {
-     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
-     		$("#errorDiv").show();
-     		$("#errorMsg").html(errMsg);
-     		console.log(errMsg)
-     } 
-   });
+	if(!submitting){
+	submitting=1;
+		$.ajax({
+	     type: "POST",
+	     url: "/api/login",
+	     data: $("#login").serialize(), 
+	     success: function(data)
+	     {
+	        window.location.replace("/");
+	     },
+	     error: function(XMLHttpRequest, textStatus, errorThrown) {
+	     		submitting=0;
+	     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
+	     		$("#errorDiv").show();
+	     		$("#errorMsg").html(errMsg);
+	     		console.log(errMsg)
+	     } 
+	  });
+	}
 return false; 
 });
 </script>
