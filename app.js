@@ -15,6 +15,7 @@ var app = koa();
 
 var user = require('./controllers/user');
 var project = require('./controllers/project');
+var projectM = require('./models/project');
 
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
@@ -30,6 +31,7 @@ app.get('/', index);
 app.get('/login', login);
 app.get('/logout', logout);
 app.get('/create', create);
+app.get('/browse', browse);
 app.get('/project/:id', project.show);
 app.get('/public/*', serve('.'));
 
@@ -66,6 +68,11 @@ function *logout() {
 
 function *login() {
 	this.body = yield render('login',sessionHelper.commonTemplate(this.session));
+}
+
+function *browse() {
+	console.log(yield projectM.getAllProjects());
+	this.body = yield render('browse',sessionHelper.commonTemplate(this.session));
 }
 
 
