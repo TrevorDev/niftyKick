@@ -145,7 +145,7 @@ $.ajax({
 			  maxFiles: 1,
 			  maxFilesize: 1, // MB
 			  addRemoveLinks: true,
-			  acceptedFiles: "image/*",
+			  acceptedFiles: "image/jpeg",
 			  url: "/api/project/"+resp.data.id+"/fileUpload/projectImage/",
 			  accept: function(file, done) {
 			    done();
