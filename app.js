@@ -71,8 +71,9 @@ function *login() {
 }
 
 function *browse() {
-	console.log(yield projectM.getAllProjects());
-	this.body = yield render('browse',sessionHelper.commonTemplate(this.session));
+	var temp = sessionHelper.commonTemplate(this.session);
+	temp.projects = yield projectM.getAllProjects();
+	this.body = yield render('browse',temp);
 }
 
 

@@ -1,7 +1,7 @@
 
 .navbar-fixed-top {
     position: static;
-    margin-bottom: 0px;
+    margin-bottom: 20px;
     margin-left: 0px;
     margin-right: 0px;
 }
@@ -89,6 +89,10 @@ textarea {
 input {
 }
 
-.btn-black{
-    border:1px solid #cccccc
+.btn-green{
+    padding: 10px 15px;
+    color: #ffffff;
+    background-color: #74cfae;
+    cursor: pointer;
+    display: inline-block
 }

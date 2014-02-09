@@ -2,15 +2,24 @@
 {% block body %}
 	    <div class="container-wide">
 	    	<div class="row">
-	    		<div class="col-lg-8 col-lg-offset-2">
-	    			<h1>{{project.title}}</h1>
-	    			<h4>${{project.price}}</h4>
-	    			<h4>{{project.info}}</h4>
-	    			<h4>{{project.type}}</h4>
-	    			<h4>{{project.description}}</h4>
-	    			<h4>{{project.id}}</h4>
-	    			<img src="/api/project/{{project.id}}/image">
-	    		</div><!-- /col-lg-8 -->
+	    		
+	    			{% for project in projects %}
+	    				<a href="/project/{{project.id}}">
+		    			<div class="col-lg-2">
+		    				<div class="well" style="height: 300px;overflow:hidden;">
+		    				<div class="centered">
+			    				<img src="/api/project/{{project.id}}/image" style="height:100px;">
+			    				<h4>{{project.type}}:</h4>
+			    				<h4>{{project.title}}</h4>
+				    			<h4>${{project.price}}</h4>
+				    			<h4>{{project.info}}</h4>
+			    			</div>
+			    			
+			    			
+			    			</div>
+		    			</div>
+		    			</a>
+						{% endfor %}
 	    	</div><!-- /row -->
 			</div><!-- /hello -->
 {% endblock %}
