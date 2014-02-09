@@ -15,6 +15,7 @@ var app = koa();
 
 var user = require('./controllers/user');
 var project = require('./controllers/project');
+var file = require('./controllers/file');
 var projectM = require('./models/project');
 
 //REMOVE IN PRODUCTION??
@@ -46,6 +47,8 @@ app.post('/api/project/:id/deleteTempFile', project.deleteTempFile);
 app.post('/api/project/:id/fileUpload/projectImage', project.projectImageUpload);
 
 app.post('/api/project/:id/create', project.create);
+
+app.get('/api/file/:id/download', file.download);
 
 
 //PAGE HANDLERS

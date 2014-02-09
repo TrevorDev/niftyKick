@@ -77,11 +77,14 @@ exports.getImage = function * () {
 
 exports.show = function * () {
   proj = yield project.find(this.params.id);
+  files = yield fileM.getFilesByProject(this.params.id);
   if(proj.length <= 0){
     this.redirect('/');
   }else{
     template = sessionHelper.commonTemplate(this.session);
     template.project = proj[0];
+    template.files = files;
+    console.log(files)
     this.body = yield render('project', template);
   }
 }

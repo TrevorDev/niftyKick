@@ -4,12 +4,17 @@
 	    	<div class="row">
 	    		<div class="col-lg-8 col-lg-offset-2">
 	    			<h1>{{project.type}}: {{project.title}}</h1>
-	    			<div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Download Now</div><br>
+	    			<a href="/"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Download Now</div></a><br>
 	    			<img src="/api/project/{{project.id}}/image" style="height:300px">
+	    			<h2>Info</h2>
 	    			<h4>{{project.info}}</h4>
-	    			<h4>{{project.description}}</h4>
-	    			<h4>{{project.id}}</h4>
-	    			
+	    			<h2>Description</h2>
+	    			<h4>{{project.description | escape |replace('\n', "<br>", 'g')|raw}}</h4>
+
+	    			<h2>Files: </h2>
+	    			{% for file in files %}
+	    				<li>{{file.name}} {{file.id}}</li>
+	    			{% endfor %}
 	    		</div><!-- /col-lg-8 -->
 	    	</div><!-- /row -->
 			</div><!-- /hello -->
