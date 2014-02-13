@@ -77,6 +77,11 @@
 
 {% block script %}
 <script>
+function showError(msg){
+	$("#errorDiv").show();
+	$("#errorMsg").html(msg);
+}
+
 var submitting = 0;
 $("#createAccount").submit(function() {
 	if(!submitting){
@@ -87,14 +92,12 @@ $("#createAccount").submit(function() {
 	     data: $("#createAccount").serialize(), 
 	     success: function(data)
 	     {
-	        window.location.replace("/");
+	        window.location.replace(redirect || "/");
 	     },
 	     error: function(XMLHttpRequest, textStatus, errorThrown) {
 	     		submitting=0;
 	     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
-	     		$("#errorDiv").show();
-	     		$("#errorMsg").html(errMsg);
-	     		console.log(errMsg)
+	     		showError(errMsg)
 	     } 
 	   });
 	}
@@ -110,18 +113,28 @@ $("#login").submit(function() {
 	     data: $("#login").serialize(), 
 	     success: function(data)
 	     {
-	        window.location.replace("/");
+	        window.location.replace(redirect || "/");
 	     },
 	     error: function(XMLHttpRequest, textStatus, errorThrown) {
 	     		submitting=0;
 	     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
-	     		$("#errorDiv").show();
-	     		$("#errorMsg").html(errMsg);
-	     		console.log(errMsg)
+	     		showError(errMsg)
 	     } 
 	  });
 	}
 return false; 
 });
+
+function getURLParameter(name) {
+	var ret = decodeURIComponent((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]);
+  return ret == "null" ? null : ret;
+}
+
+errMsg = getURLParameter("message")
+redirect = getURLParameter("redirect")
+if(errMsg){
+	showError(errMsg)
+}
+
 </script>
 {% endblock %}

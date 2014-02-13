@@ -6,7 +6,7 @@
 	    			<h1>{{project.type}}: {{project.title}}</h1>
 
 	    			{% if project.price != '0' %}
-	    				<a href="/"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
+	    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
 	    			{% else %}
 	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> This project is free! Download files below.</div>
 	    			{% endif %}
