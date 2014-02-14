@@ -7,9 +7,10 @@ var path = require('path');
 var sessionHelper = require('./../lib/sessionHelper');
 var fs = require('co-fs');
 var render = require('./../lib/render');
+var payment = require('./../lib/payment');
 var send = require('koa-send');
 var upload = require('./../lib/upload');
-var stripe = require('stripe')(config.stripe_api_key);
+var Q = require('q');
 
 var projectsFolder = path.join(config.appRoot, "userFiles/projects");
 var projectsAssetsFolder = "projectAssets";
@@ -69,19 +70,13 @@ exports.create = function * () {
 exports.purchase = function * () {
   var params = yield parse(this);
   var pID = this.params.id;
-  console.log(params.token)
-
-  stripe.charges.create({
-    amount: 1600,
-    currency: 'cad',
-    card: params.token.id
-  }, function(err, charge) {
-      if (err) {
-          this.jsonResp(400,{message: "An error occured, card not charged."})
-      } else {
-          this.jsonResp(200,{message: "Image not found"})
-      }
-  });
+  try{
+    var paid = yield payment.charge(params.token.id, 1500)
+  }catch(err){
+    console.log(err)
+    this.jsonResp(400,{message: "An error occured, card not charged"})
+  }
+  this.jsonResp(200,{message: "Payment success"})
 }
 
 exports.getImage = function * () {
@@ -103,7 +98,6 @@ exports.show = function * () {
     template = sessionHelper.commonTemplate(this.session);
     template.project = proj[0];
     template.files = files;
-    console.log(files)
     this.body = yield render('project', template);
   }
 }
