@@ -5,11 +5,15 @@
 	    		<div class="col-lg-8 col-lg-offset-2">
 	    			<h1>{{project.type}}: {{project.title}}</h1>
 
-	    			{% if project.price != '0' %}
-	    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
-	    			{% else %}
+	    			{% if project.price == '0' %}
 	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> This project is free! Download files below.</div>
+	    			{% elseif email %}
+	    				<div class="btn-green" id="buyButton" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div>
+	    			{% else %}
+	    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
 	    			{% endif %}
+
+					  
 
 	    			<br>
 	    			<img src="/api/project/{{project.id}}/image" style="height:300px">
@@ -29,4 +33,29 @@
 	    		</div><!-- /col-lg-8 -->
 	    	</div><!-- /row -->
 			</div><!-- /hello -->
+{% endblock %}
+
+{% block script %}
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script>
+  var handler = StripeCheckout.configure({
+    key: 'pk_test_8kNalDPmNooOpzXS1qVG7yrM',
+    email: '{{email}}',
+    //image: '/square-image.png',
+    token: function(token, args) {
+      // Use the token to create the charge with a server-side script.
+      // You can access the token ID with `token.id`
+    }
+  });
+
+  document.getElementById('buyButton').addEventListener('click', function(e) {
+    // Open Checkout with further options
+    handler.open({
+      name: 'Nifty Kick',
+      description: '{{project.title}} (${{project.price}})',
+      amount: {{project.price*100}}
+    });
+    e.preventDefault();
+  });
+</script>
 {% endblock %}
