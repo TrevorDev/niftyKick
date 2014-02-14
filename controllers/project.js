@@ -9,6 +9,7 @@ var fs = require('co-fs');
 var render = require('./../lib/render');
 var send = require('koa-send');
 var upload = require('./../lib/upload');
+var stripe = require('stripe')(config.stripe_api_key);
 
 var projectsFolder = path.join(config.appRoot, "userFiles/projects");
 var projectsAssetsFolder = "projectAssets";
@@ -63,6 +64,24 @@ exports.create = function * () {
   };
   var proj = yield project.update(this.params.id, sessionHelper.getUserID(this.session), params.type, params.title, params.price, params.info, params.description, params.videoLink, displayImage, project.STATUS.ACTIVE);
   this.jsonResp(200,{message: "Created", id: this.params.id})
+}
+
+exports.purchase = function * () {
+  var params = yield parse(this);
+  var pID = this.params.id;
+  console.log(params.token)
+
+  stripe.charges.create({
+    amount: 1600,
+    currency: 'cad',
+    card: params.token.id
+  }, function(err, charge) {
+      if (err) {
+          this.jsonResp(400,{message: "An error occured, card not charged."})
+      } else {
+          this.jsonResp(200,{message: "Image not found"})
+      }
+  });
 }
 
 exports.getImage = function * () {

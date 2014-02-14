@@ -42,6 +42,7 @@ app.post('/api/login', user.login);
 
 app.post('/api/project/createEmptyProject', project.createEmptyProject);
 app.get('/api/project/:id/image', project.getImage);
+app.post('/api/project/:id/purchase', project.purchase);
 app.post('/api/project/:id/fileUpload', project.fileUpload);
 app.post('/api/project/:id/deleteTempFile', project.deleteTempFile);
 app.post('/api/project/:id/fileUpload/projectImage', project.projectImageUpload);

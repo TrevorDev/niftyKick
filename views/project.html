@@ -43,8 +43,19 @@
     email: '{{email}}',
     //image: '/square-image.png',
     token: function(token, args) {
-      // Use the token to create the charge with a server-side script.
-      // You can access the token ID with `token.id`
+      $.ajax({
+		     type: "POST",
+		     url: "/api/project/{{project.id}}/purchase",
+		     data: {token: token}, 
+		     success: function(data)
+		     {
+		        location.reload(true);
+		     },
+		     error: function(XMLHttpRequest, textStatus, errorThrown) {
+		     		var errMsg = $.parseJSON(XMLHttpRequest.responseText).data.message
+		     		console.log(errMsg)
+		     } 
+	  	 });
     }
   });
 

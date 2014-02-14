@@ -28,6 +28,7 @@
 		"co-busboy": "x.x",
 		"ncp": "x.x",
 		"koa-send": "x.x",
+		"stripe": "x.x",
 		"q": "x.x"
 	}
 }
