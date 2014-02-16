@@ -54,7 +54,7 @@ console.log(ret)
 
 exports.find = Q.async(function *(id) {
 	var ret = (yield db.query('select * from project where id = ?',[id]));
-	return ret;
+	return ret[0];
 })
 
 exports.getAllProjects = Q.async(function *(id) {
@@ -65,6 +65,6 @@ exports.getAllProjects = Q.async(function *(id) {
 
 exports.getImage = Q.async(function *(id) {
 	var ret = (yield db.query('select user_id, display_image from project where id = ?',[id]));
-	return ret;
+	return ret[0];
 })
 

@@ -70,9 +70,9 @@ exports.create = function * () {
 
 exports.purchase = function * () {
   var params = yield parse(this);
-  var p = yield project.find(this.params.id);
   try{
-    var amountPaid = p[0].price*100;
+    var p = yield project.find(this.params.id);
+    var amountPaid = p.price*100;
     var paid = yield payment.charge(params.token.id, amountPaid)
     yield user.purchaseProject(sessionHelper.getUserID(this.session), this.params.id, amountPaid);
     this.jsonResp(200,{message: "Payment success"})
@@ -84,8 +84,8 @@ exports.purchase = function * () {
 
 exports.getImage = function * () {
   var ret = yield project.getImage(this.params.id);
-  if(ret.length>=1){
-    f = path.join(project.getAssetsFolder(this.params.id, ret[0].user_id.toString()),ret[0].display_image)
+  if(ret!=null){
+    f = path.join(project.getAssetsFolder(this.params.id, ret.user_id.toString()),ret.display_image)
     yield send(this, f)
   }else{
     this.jsonResp(404,{message: "Image not found"})
@@ -95,11 +95,11 @@ exports.getImage = function * () {
 exports.show = function * () {
   proj = yield project.find(this.params.id);
   files = yield fileM.getFilesByProject(this.params.id);
-  if(proj.length <= 0){
+  if(proj == null){
     this.redirect('/');
   }else{
     template = sessionHelper.commonTemplate(this.session);
-    template.project = proj[0];
+    template.project = proj;
     template.files = files;
     this.body = yield render('project', template);
   }

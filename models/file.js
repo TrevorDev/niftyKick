@@ -15,10 +15,10 @@ exports.getFilesByProject = Q.async(function *(projectID) {
 
 exports.find = Q.async(function *(id) {
 	var ret = (yield db.query('select * from file where id = ?',[id]));
-	return ret;
+	return ret[0];
 })
 
 exports.getDownload = Q.async(function *(id) {
 	var ret = (yield db.query('select * from file, project, user where file.id = ? and file.project_id=project.id and project.user_id = user.id',[id]));
-	return ret;
+	return ret[0];
 })
