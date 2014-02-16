@@ -25,5 +25,5 @@ exports.purchaseProject = Q.async(function *(userID, projectID, pricePaid) {
 })
 
 exports.getPurchase = Q.async(function *(userID, projectID) {
-	return null;
+	return (yield purchase.getUserPurchase(userID, projectID));
 })

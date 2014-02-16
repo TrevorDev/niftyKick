@@ -101,6 +101,13 @@ exports.show = function * () {
     template = sessionHelper.commonTemplate(this.session);
     template.project = proj;
     template.files = files;
+    if(sessionHelper.isLoggedIn(this.session)){
+      var owned = yield user.getPurchase(sessionHelper.getUserID(this.session), this.params.id);
+      if(owned){
+        template.owned = true;
+      }
+    }
+    
     this.body = yield render('project', template);
   }
 }

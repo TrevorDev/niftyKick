@@ -7,6 +7,8 @@
 
 	    			{% if project.price == '0' %}
 	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> This project is free! Download files below.</div>
+	    			{% elseif owned %}
+	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> You own {{project.title}}! Download files below.</div>
 	    			{% elseif email %}
 	    				<div class="btn-green" id="buyButton" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div>
 	    			{% else %}
@@ -24,10 +26,11 @@
 
 	    			<h2>Files: </h2>
 	    			{% for file in files %}
-	    				<li>{{file.name}}
-	    					{% if project.price == '0' %}
-	    						<a href="/api/file/{{file.id}}/download"><div class="btn-green" style="padding: 2px">Download Now</div></a>
+	    				<li>
+	    					{% if project.price == '0' || owned %}
+	    						<a href="/api/file/{{file.id}}/download"><div class="btn-green" style="padding: 2px;margin:5px;">Download Now</div></a>
 	    					{% endif %}
+	    					{{file.name}}
 	    				</li>
 	    			{% endfor %}
 	    		</div><!-- /col-lg-8 -->
