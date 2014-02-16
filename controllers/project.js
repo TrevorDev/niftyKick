@@ -2,6 +2,7 @@ var parse = require('co-body');
 var config = require('../lib/config');
 var fileSys = require('../lib/fileSys');
 var project = require('./../models/project');
+var user = require('./../models/user');
 var fileM = require('./../models/file');
 var path = require('path');
 var sessionHelper = require('./../lib/sessionHelper');
@@ -69,14 +70,16 @@ exports.create = function * () {
 
 exports.purchase = function * () {
   var params = yield parse(this);
-  var pID = this.params.id;
+  var p = yield project.find(this.params.id);
   try{
-    var paid = yield payment.charge(params.token.id, 1500)
+    var amountPaid = p[0].price*100;
+    var paid = yield payment.charge(params.token.id, amountPaid)
+    yield user.purchaseProject(sessionHelper.getUserID(this.session), this.params.id, amountPaid);
+    this.jsonResp(200,{message: "Payment success"})
   }catch(err){
     console.log(err)
     this.jsonResp(400,{message: "An error occured, card not charged"})
   }
-  this.jsonResp(200,{message: "Payment success"})
 }
 
 exports.getImage = function * () {

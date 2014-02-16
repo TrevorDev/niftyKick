@@ -1,5 +1,6 @@
 var db = require('./../lib/database');
 var crypto = require('./../lib/crypto');
+var purchase = require('./../models/purchase');
 var Q = require('q');
 
 exports.create = Q.async(function *(email, password) {
@@ -16,4 +17,13 @@ exports.auth = Q.async(function *(email, password) {
 	}else{
 		return 0;
 	}
+})
+
+exports.purchaseProject = Q.async(function *(userID, projectID, pricePaid) {
+	var ret = yield purchase.create(userID, projectID, pricePaid);
+	return ret;
+})
+
+exports.getPurchase = Q.async(function *(userID, projectID) {
+	return null;
 })
