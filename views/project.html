@@ -42,7 +42,7 @@
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
   var handler = StripeCheckout.configure({
-    key: 'pk_test_8kNalDPmNooOpzXS1qVG7yrM',
+    key: '{{public_stripe_api_key}}',
     email: '{{email}}',
     //image: '/square-image.png',
     token: function(token, args) {

@@ -101,6 +101,7 @@ exports.show = function * () {
     template = sessionHelper.commonTemplate(this.session);
     template.project = proj;
     template.files = files;
+    template.public_stripe_api_key = config.public_stripe_api_key
     if(sessionHelper.isLoggedIn(this.session)){
       var owned = yield user.getPurchase(sessionHelper.getUserID(this.session), this.params.id);
       if(owned){
