@@ -10,6 +10,7 @@ BUY/SELL DIGITAL GOODS WEBSITE
 * Improve featured projects list on mainpage
 * Migrate over to either Azure or S3 for file storage/retrieval
 * Refactor models to be object based similar to active record/sailsMVC apis
+* WRITE MORE TESTS SO I DONT BREAK STUFF
 * Get more users!!!!
 * Don't be evil
 * ???
