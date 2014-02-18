@@ -33,6 +33,7 @@ app.get('/login', login);
 app.get('/logout', logout);
 app.get('/create', create);
 app.get('/browse', browse);
+app.get('/faq', faq);
 app.get('/project/:id', project.show);
 app.get('/public/*', serve('.'));
 
@@ -72,6 +73,10 @@ function *logout() {
 
 function *login() {
 	this.body = yield render('login',sessionHelper.commonTemplate(this.session));
+}
+
+function *faq() {
+	this.body = yield render('faq',sessionHelper.commonTemplate(this.session));
 }
 
 function *browse() {
