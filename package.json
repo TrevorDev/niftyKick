@@ -21,6 +21,7 @@
 		"koa-static": "x.x",
 		"koa-session": "x.x",
 		"mysql": "x.x",
+		"sequelize": "x.x",
 		"swig": "x.x",
 		"bcryptjs": "x.x",
 		"save-to": "x.x",
