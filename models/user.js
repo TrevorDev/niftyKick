@@ -1,29 +1,52 @@
-var db = require('./../lib/database');
 var crypto = require('./../lib/crypto');
-var purchase = require('./../models/purchase');
-var Q = require('q');
+var Promise = require("bluebird");
+var Database = require('./../lib/database');
+var Sequelize = Database.getSequelize();
+var sequelize = Database.getSequelizeInstance();
 
-exports.create = Q.async(function *(email, password) {
-	var cryptedPass = yield crypto.crypt(password)
-	var ret = (yield db.query('insert into user (email, password) VALUES (?, ?)',[email, cryptedPass]));
-	return ret;
-})
+var Project = require("./project")
+var Purchase = require("./purchase")
 
-exports.auth = Q.async(function *(email, password) {
-	var ret = (yield db.query('select password, id from user where email = ?',[email]));
-	var valid = yield crypto.compareStringHash(password, ret[0].password)
-	if(valid){
-		return ret[0].id;
-	}else{
-		return 0;
+var User = sequelize.define('User', 
+	{
+	  email: {
+	  	type:Sequelize.STRING,
+	  	validate: {
+	  		isEmail: true
+	  	},
+	  	unique: true
+	  },
+	  password: Sequelize.STRING
+	}, {
+		classMethods: {
+    	createEncrypted: Promise.coroutine(function*(attributes){ 
+    		return yield User.create({
+								  email: attributes.email,
+								  password: yield crypto.crypt(attributes.password)
+								})
+			}),
+			authenticate: Promise.coroutine(function*(email, password){
+				var user = yield User.find({where: {email: email}});
+				if(yield crypto.compareStringHash(password, user.password)){
+					return user.id;
+				}else{
+					return 0;
+				}
+			})
+	  },
+	  instanceMethods: {
+	  	purchaseProject: Promise.coroutine(function*(project){ 
+    		var purchase = yield Purchase.create({price_paid: project.price})
+    		yield this.addPurchase(purchase);
+    		yield project.addPurchase(purchase);
+    		return purchase;
+			})
+	  }
 	}
-})
+)
+User.hasMany(Project)
+Project.belongsTo(User)
+User.hasMany(Purchase)
+Purchase.belongsTo(User)
 
-exports.purchaseProject = Q.async(function *(userID, projectID, pricePaid) {
-	var ret = yield purchase.create(userID, projectID, pricePaid);
-	return ret;
-})
-
-exports.getPurchase = Q.async(function *(userID, projectID) {
-	return (yield purchase.getUserPurchase(userID, projectID));
-})
+module.exports = User;

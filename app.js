@@ -1,6 +1,6 @@
 var render = require('./lib/render');
 var config = require('./lib/config');
-var db = require('./lib/database');
+var Database = require('./lib/database');
 var sessionHelper = require('./lib/sessionHelper');
 var jsonResp = require('./lib/jsonResp');
 var logger = require('koa-logger');
@@ -13,10 +13,19 @@ var koa = require('koa');
 var swig = require('swig');
 var app = koa();
 
+var Sequelize = Database.getSequelize();
+var sequelize = Database.getSequelizeInstance();
+
 var user = require('./controllers/user');
 var project = require('./controllers/project');
 var file = require('./controllers/file');
-var projectM = require('./models/project');
+
+var Project = require('./models/project');
+var User = require('./models/user');
+var File = require('./models/file');
+var Purchase = require('./models/purchase');
+
+//sequelize.sync({ force: true });
 
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
@@ -81,7 +90,7 @@ function *faq() {
 
 function *browse() {
 	var temp = sessionHelper.commonTemplate(this.session);
-	temp.projects = yield projectM.getAllProjects();
+	temp.projects = yield Project.findAll();
 	this.body = yield render('browse',temp);
 }
 

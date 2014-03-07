@@ -1,70 +1,69 @@
-var db = require('./../lib/database');
-var Q = require('q');
+var Promise = require("bluebird");
+var Database = require('./../lib/database');
+var Sequelize = Database.getSequelize();
+var sequelize = Database.getSequelizeInstance();
+
+var config = require('./../lib/config');
 var path = require('path');
-var config = require('../lib/config');
 var fs = require('co-fs');
 
-exports.STATUS = {CREATING: 0, ACTIVE: 1, DELETED: 2}
+var File = require("./file")
+var Purchase = require("./purchase")
+var User = require("./user")
 
 //FOLDER ACCESS STUFF
 var ROOT_FOLDER = path.join(config.appRoot, "userFiles/projects");
 var ASSETS_FOLDER_NAME = "projectAssets";
 var FILES_FOLDER_NAME = "files";
-exports.DISPLAY_IMAGE = "displayImage.jpg";
+var DISPLAY_IMAGE = "displayImage.jpg";
 
-function getUserFolder(userID){
-	return path.join(ROOT_FOLDER, userID.toString());
-}
-exports.getUserFolder = getUserFolder;
+var Project = sequelize.define('Project', 
+	{
+		title: {
+	  	type:Sequelize.STRING,
+	  	unique: true
+	  },
+		type: Sequelize.STRING,
+		price: Sequelize.FLOAT,
+		info: Sequelize.STRING,
+		description: Sequelize.STRING,
+		video_link: Sequelize.STRING,
+		display_image: Sequelize.STRING,
+		status: Sequelize.INTEGER
+	}, {
+		classMethods: {
+    	
+	  },
+	  instanceMethods: {
+	  	createFileFolders: function*(){
+	  		try{
+			    yield fs.mkdir(this.getUserFolder());
+			  }catch(e){}
+	  		yield fs.mkdir(this.getProjectFolder());
+			  yield fs.mkdir(this.getAssetsFolder());
+			  yield fs.mkdir(this.getFilesFolder());
+	  	},
+	  	getUserFolder: function(){
+    		return path.join(ROOT_FOLDER, this.UserId.toString());
+			},
+	  	getProjectFolder: function(){
+    		return path.join(this.getUserFolder(), this.id.toString());
+			},
+	  	getAssetsFolder: function(){
+    		return path.join(this.getProjectFolder(), ASSETS_FOLDER_NAME);
+			},
+  		getFilesFolder: function(){ 
+    		return path.join(this.getProjectFolder(), FILES_FOLDER_NAME);
+			}
+	  }
+	}
+)
 
-function getProjectFolder(projectID, userID){
-	return path.join(getUserFolder(userID), projectID.toString());
-}
-exports.getProjectFolder = getProjectFolder;
-
-function getAssetsFolder(projectID, userID){
-	return path.join(getProjectFolder(projectID, userID), ASSETS_FOLDER_NAME);
-}
-exports.getAssetsFolder = getAssetsFolder;
-
-function getFilesFolder(projectID, userID){
-	return path.join(getProjectFolder(projectID, userID), FILES_FOLDER_NAME);
-}
-exports.getFilesFolder = getFilesFolder;
-
-//MODEL FUNCTIONS -------------------------------------------------------------------------------
-
-exports.create = Q.async(function *(userID, type, title, price, info, description,videoLink, displayImage, status) {
-	var ret = (yield db.query('insert into project (user_id, type, title, price, info, description,video_link,display_image, status) VALUES (?, ?, ?, ?, ?, ?,?,?,?)',[userID, type, title, price, info, description,videoLink,displayImage,status]));
-  try{
-    yield fs.mkdir(getUserFolder(userID));
-  }catch(e){
-  }
-  yield fs.mkdir(getProjectFolder(ret.insertId.toString(), userID));
-  yield fs.mkdir(getAssetsFolder(ret.insertId.toString(), userID));
-  yield fs.mkdir(getFilesFolder(ret.insertId.toString(), userID));
-	return ret;
-})
-
-exports.update = Q.async(function *(projectID, userID, type, title, price, info, description,videoLink, displayImage, status) {
-	var ret = (yield db.query('update project set user_id = ?, type = ?, title = ?, price = ?, info = ?, description = ?,video_link = ?,display_image = ?, status = ? where id = ?;',[userID, type, title, price, info, description,videoLink,displayImage,status,projectID]));
-console.log(ret)
-	return ret;
-})	
-
-exports.find = Q.async(function *(id) {
-	var ret = (yield db.query('select * from project where id = ?',[id]));
-	return ret[0];
-})
-
-exports.getAllProjects = Q.async(function *(id) {
-	var ret = (yield db.query('select * from project where status = ?',[exports.STATUS.ACTIVE]));
-	return ret;
-})
+Project.hasMany(File)
+Project.hasMany(Purchase)
 
 
-exports.getImage = Q.async(function *(id) {
-	var ret = (yield db.query('select user_id, display_image from project where id = ?',[id]));
-	return ret[0];
-})
 
+Project.STATUS = {CREATING: 0, ACTIVE: 1, DELETED: 2}
+Project.DISPLAY_IMAGE = DISPLAY_IMAGE
+module.exports = Project;

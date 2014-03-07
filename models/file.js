@@ -1,24 +1,20 @@
-var db = require('./../lib/database');
-var Q = require('q');
+var Promise = require("bluebird");
+var Database = require('./../lib/database');
+var Sequelize = Database.getSequelize();
+var sequelize = Database.getSequelizeInstance();
 
-exports.STATUS = {ACTIVE: 1, DELETED: 0}
+var File = sequelize.define('File', 
+	{
+		name: Sequelize.STRING,
+		status: Sequelize.INTEGER
+	}, {
+		classMethods: {
+    	
+	  },
+	  instanceMethods: {
+	  }
+	}
+)
 
-exports.create = Q.async(function *(projectID, fileName) {
-	var ret = (yield db.query('insert into file (project_id, name, status) VALUES (?, ?, ?)',[projectID, fileName, exports.STATUS.ACTIVE]));
-	return ret;
-})
-
-exports.getFilesByProject = Q.async(function *(projectID) {
-	var ret = (yield db.query('select * from file where project_id = ? and status = ?',[projectID, exports.STATUS.ACTIVE]));
-	return ret;
-})
-
-exports.find = Q.async(function *(id) {
-	var ret = (yield db.query('select * from file where id = ?',[id]));
-	return ret[0];
-})
-
-exports.getDownload = Q.async(function *(id) {
-	var ret = (yield db.query('select * from file, project, user where file.id = ? and file.project_id=project.id and project.user_id = user.id',[id]));
-	return ret[0];
-})
+File.STATUS = {CREATING: 0, ACTIVE: 1, DELETED: 2}
+module.exports = File;

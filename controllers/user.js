@@ -1,6 +1,6 @@
 var parse = require('co-body');
 var sessionHelper = require('./../lib/sessionHelper');
-var user = require('./../models/user');
+var User = require('./../models/user');
 var upload = require('./../lib/upload');
 var dlxlib = require('./../lib/dlxlib');
 var config = require('./../lib/config');
@@ -14,16 +14,17 @@ var multiParse = require('co-busboy')
 exports.createAccount = function *() {
 	try {
 		var params = yield parse(this)
-		if(params.email.length > 255 || params.password.length > 45){
+		if(params.email.length > 255 || params.password.length > 255){
 			this.jsonResp(400,{message: "Email or Password is too long"})
 		}else if(params.password.length < 6){
 			this.jsonResp(400,{message: "Password must be longer than 6 characters"})
 		}else{
-			ret = yield user.create(params.email, params.password)
-			sessionHelper.setLoggedIn(this.session,params.email,ret.insertId);
+			var user = yield User.createEncrypted({email: params.email, password: params.password})
+			sessionHelper.setLoggedIn(this.session,params.email,user.id);
 			this.jsonResp(201,{message: "Account created"})
 		}
 	} catch (err) {
+		console.log(err)
 		this.jsonResp(409,{message: "Account already exists"})
 	}
 }
@@ -31,7 +32,7 @@ exports.createAccount = function *() {
 exports.login = function *() {
 	try {
 		var params = yield parse(this)
-		var valid = yield user.auth(params.email, params.password)
+		var valid = yield User.authenticate(params.email, params.password)
 		if (!valid) {
 			this.jsonResp(400,{message: "Invalid username/password"})
 		}else{
