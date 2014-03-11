@@ -3,10 +3,15 @@ var Database = require('./../lib/database');
 var Sequelize = Database.getSequelize();
 var sequelize = Database.getSequelizeInstance();
 
+var STATUS = {CREATING: "creating", ACTIVE: "active", DELETED: "deleted"}
+
 var File = sequelize.define('File', 
 	{
 		name: Sequelize.STRING,
-		status: Sequelize.INTEGER
+		status: {
+	    type:   Sequelize.ENUM,
+	    values: [STATUS.CREATING, STATUS.ACTIVE, STATUS.DELETED]
+	  }
 	}, {
 		classMethods: {
     	
@@ -16,5 +21,5 @@ var File = sequelize.define('File',
 	}
 )
 
-File.STATUS = {CREATING: 0, ACTIVE: 1, DELETED: 2}
+File.STATUS = STATUS
 module.exports = File;

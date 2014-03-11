@@ -30,5 +30,6 @@
 		"koa-send": "x.x",
 		"stripe": "x.x",
 		"bluebird": "x.x"
-	}
+	},
+	"testing": "mocha"
 }

@@ -11,7 +11,6 @@ var render = require('./../lib/render');
 var payment = require('./../lib/payment');
 var send = require('koa-send');
 var upload = require('./../lib/upload');
-var Q = require('q');
 
 var projectsFolder = path.join(config.appRoot, "userFiles/projects");
 var projectsAssetsFolder = "projectAssets";
@@ -74,7 +73,7 @@ exports.create = function * () {
 		fileCreated = yield File.create({name: files[i], status: File.STATUS.ACTIVE})
     yield project.addFile(fileCreated);
   };
-  yield project.updateAttributes({type: params.type, title: params.title, price: params.price, info: params.info, description: params.description, video_link: params.videoLink, display_image: displayImage, status: Project.STATUS.ACTIVE});
+  yield project.updateAttributes({type: params.type, title: params.title, price: params.price, info: params.info, description: params.description, videoLink: params.videoLink, displayImage: displayImage, status: Project.STATUS.ACTIVE});
   this.jsonResp(200,{message: "Created", id: this.params.id})
 }
 
@@ -96,7 +95,7 @@ exports.purchase = function * () {
 exports.getImage = function * () {
   var project = yield Project.find(this.params.id);
   if(project!=null){
-    f = path.join(project.getAssetsFolder(),project.display_image)
+    f = path.join(project.getAssetsFolder(), project.displayImage)
     yield send(this, f)
   }else{
     this.jsonResp(404,{message: "Image not found"})

@@ -17,6 +17,8 @@ var ASSETS_FOLDER_NAME = "projectAssets";
 var FILES_FOLDER_NAME = "files";
 var DISPLAY_IMAGE = "displayImage.jpg";
 
+var STATUS = {CREATING: "creating", ACTIVE: "active", DELETED: "deleted"}
+
 var Project = sequelize.define('Project', 
 	{
 		title: {
@@ -27,9 +29,12 @@ var Project = sequelize.define('Project',
 		price: Sequelize.FLOAT,
 		info: Sequelize.STRING,
 		description: Sequelize.STRING,
-		video_link: Sequelize.STRING,
-		display_image: Sequelize.STRING,
-		status: Sequelize.INTEGER
+		videoLink: Sequelize.STRING,
+		displayImage: Sequelize.STRING,
+		status: {
+	    type:   Sequelize.ENUM,
+	    values: [STATUS.CREATING, STATUS.ACTIVE, STATUS.DELETED]
+	  }
 	}, {
 		classMethods: {
     	
@@ -64,6 +69,6 @@ Project.hasMany(Purchase)
 
 
 
-Project.STATUS = {CREATING: 0, ACTIVE: 1, DELETED: 2}
+Project.STATUS = STATUS
 Project.DISPLAY_IMAGE = DISPLAY_IMAGE
 module.exports = Project;
