@@ -90,7 +90,7 @@ function *faq() {
 
 function *browse() {
 	var temp = sessionHelper.commonTemplate(this.session);
-	temp.projects = yield Project.findAll();
+	temp.projects = yield Project.findAll({where: {status: Project.STATUS.ACTIVE}});
 	this.body = yield render('browse',temp);
 }
 
