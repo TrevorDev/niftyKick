@@ -37,12 +37,12 @@ app.use(jsonResp());
 app.use(router(app));
 
 //PAGE ROUTES
-app.get('/', index);
-app.get('/login', login);
+app.get('/', defaultPageLoad('index'));
+app.get('/login', defaultPageLoad('login'));
 app.get('/logout', logout);
-app.get('/create', create);
+app.get('/create', defaultPageLoad('create', true));
 app.get('/browse', browse);
-app.get('/faq', faq);
+app.get('/faq', defaultPageLoad('faq'));
 app.get('/project/:id', project.show);
 app.get('/public/*', serve('.'));
 
@@ -63,29 +63,19 @@ app.get('/api/file/:id/download', file.download);
 
 
 //PAGE HANDLERS
-function *index() {
-	this.body = yield render('index', sessionHelper.commonTemplate(this.session));
-}
-
-function *create() {
-	if(sessionHelper.isLoggedIn(this.session)){
-		this.body = yield render('create', sessionHelper.commonTemplate(this.session));
-	}else{
-		this.redirect('/login');
+function defaultPageLoad(pageName, requiresLogin) {
+	return function *(){
+		if(requiresLogin===true && !sessionHelper.isLoggedIn(this.session)){
+			this.redirect('/login');
+			return
+		}
+		this.body = yield render(pageName, sessionHelper.commonTemplate(this.session));
 	}
 }
 
 function *logout() {
 	this.session = null;
 	this.redirect('/');
-}
-
-function *login() {
-	this.body = yield render('login',sessionHelper.commonTemplate(this.session));
-}
-
-function *faq() {
-	this.body = yield render('faq',sessionHelper.commonTemplate(this.session));
 }
 
 function *browse() {
