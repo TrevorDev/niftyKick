@@ -39,11 +39,12 @@ app.use(router(app));
 //PAGE ROUTES
 app.get('/', defaultPageLoad('index'));
 app.get('/login', defaultPageLoad('login'));
-app.get('/logout', logout);
-app.get('/create', defaultPageLoad('create', true));
-app.get('/browse', browse);
 app.get('/faq', defaultPageLoad('faq'));
+app.get('/create', defaultPageLoad('create', true));
+app.get('/dashboard', defaultPageLoad('dashboard', true));
+app.get('/browse', browse);
 app.get('/project/:id', project.show);
+app.get('/logout', logout);
 app.get('/public/*', serve('.'));
 
 //API ROUTES
