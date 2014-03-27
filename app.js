@@ -25,7 +25,9 @@ var User = require('./models/user');
 var File = require('./models/file');
 var Purchase = require('./models/purchase');
 
-//sequelize.sync({ force: true });
+var coyote = require('file-e-coyote')
+coyote.startServer(config.coyoteOptions)
+sequelize.sync(); //{ force: true }
 
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
@@ -87,5 +89,5 @@ function *browse() {
 
 
 
-app.listen(3005);
+app.listen(config.appPort);
 console.log('Started ----------------------------------------------');
