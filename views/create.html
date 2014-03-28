@@ -123,16 +123,18 @@ Dropzone.options.dropzone = {
     done();
   },
   complete: function(file) {
-  	console.log("hit")
   },
   success: function(file, resp, e){
-  	console.log(resp)
-  	console.log(file)
-  	file.testThing = "trevpr"
+  	file.fileID = resp.data.files[0].id
+  	projectFiles.push(file.fileID)
+  	console.log(projectFiles)
   	file.previewElement.classList.add("dz-success");
   },
   removedfile: function(file) {
-  	console.log(file.testThing)
+  	if(file.fileID){
+  		projectFiles.splice(projectFiles.indexOf(file.fileID), 1);
+  	}
+  	console.log(projectFiles)
   	var _ref;
     if ((_ref = file.previewElement) != null) {
       _ref.parentNode.removeChild(file.previewElement);
@@ -175,7 +177,7 @@ $("#submit").click(function(){
 	var formInfo = $("#projectInfo").serialize();
 	$.ajax({
      type: "POST",
-     url: "/api/project/"+resp.data.id+"/create",
+     url: "/api/project/create",
      data: formInfo, 
      success: function(resp)
      {
