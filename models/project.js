@@ -11,10 +11,6 @@ var File = require("./file")
 var Purchase = require("./purchase")
 var User = require("./user")
 
-//FOLDER ACCESS STUFF
-var ROOT_FOLDER = path.join(config.appRoot, "userFiles/projects");
-var ASSETS_FOLDER_NAME = "projectAssets";
-var FILES_FOLDER_NAME = "files";
 var DISPLAY_IMAGE = "displayImage.jpg";
 
 var STATUS = {CREATING: "creating", ACTIVE: "active", DELETED: "deleted"}
@@ -40,26 +36,7 @@ var Project = sequelize.define('Project',
     	
 	  },
 	  instanceMethods: {
-	  	createFileFolders: function*(){
-	  		try{
-			    yield fs.mkdir(this.getUserFolder());
-			  }catch(e){}
-	  		yield fs.mkdir(this.getProjectFolder());
-			  yield fs.mkdir(this.getAssetsFolder());
-			  yield fs.mkdir(this.getFilesFolder());
-	  	},
-	  	getUserFolder: function(){
-    		return path.join(ROOT_FOLDER, this.UserId.toString());
-			},
-	  	getProjectFolder: function(){
-    		return path.join(this.getUserFolder(), this.id.toString());
-			},
-	  	getAssetsFolder: function(){
-    		return path.join(this.getProjectFolder(), ASSETS_FOLDER_NAME);
-			},
-  		getFilesFolder: function(){ 
-    		return path.join(this.getProjectFolder(), FILES_FOLDER_NAME);
-			}
+	  	
 	  }
 	}
 )

@@ -1,4 +1,4 @@
-;var DropZoneJS = function(){
+;(function(){
 
 /**
  * Require the given path.
@@ -1565,7 +1565,7 @@ require.register("dropzone/lib/dropzone.js", function(exports, require, module){
 
   })(Em);
 
-  Dropzone.version = "4.0.0-dev";
+  Dropzone.version = "3.8.4";
 
   Dropzone.options = {};
 
@@ -1916,4 +1916,4 @@ if (typeof exports == "object") {
   define(function(){ return require("dropzone"); });
 } else {
   this["Dropzone"] = require("dropzone");
-}};
+}})();

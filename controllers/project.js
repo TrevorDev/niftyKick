@@ -12,55 +12,12 @@ var payment = require('./../lib/payment');
 var send = require('koa-send');
 var upload = require('./../lib/upload');
 
-var projectsFolder = path.join(config.appRoot, "userFiles/projects");
-var projectsAssetsFolder = "projectAssets";
-var projectsFilesFolder = "files";
-
 //UPLOADING ------------------------------------------------------------------
-exports.createEmptyProject = function *() {
-  if(sessionHelper.isLoggedIn(this.session)){
-    var user = yield User.find(sessionHelper.getUserID(this.session));
-    var project = yield Project.create({status: Project.STATUS.CREATING});
-    yield user.addProject(project);
-    yield project.createFileFolders();
-    this.jsonResp(201,{message: "Created", id: project.id})
-  }else{
-    this.jsonResp(401,{message: "Please authenticate"})
-  }
-}
-
-exports.fileUpload = function *() {
-  if(sessionHelper.isLoggedIn(this.session)){
-    var project = yield Project.find(this.params.id)
-    var files = yield upload.fileUpload(this, project.getFilesFolder());
-    this.jsonResp(200,{message: "Uploaded",files: files});
-  }else{
-    this.jsonResp(401,{message: "Please authenticate"})
-  }
-}
-
-exports.projectImageUpload = function *() {
-  var project = yield Project.find(this.params.id)
-  var files = yield upload.fileUpload(this, project.getAssetsFolder(),Project.DISPLAY_IMAGE);
-  this.jsonResp(200,{message: "Uploaded",files: files});
-}
-
-exports.deleteTempFile = function *() {
-  var params = yield parse(this);
-  var project = yield Project.find(this.params.id)
-  var filePath = "";
-  if(params.projectImage){
-    console.log(project.getAssetsFolder())
-    console.log(Project.DISPLAY_IMAGE)
-    filePath = path.join(project.getAssetsFolder(), Project.DISPLAY_IMAGE)
-  }else{
-    filePath = path.join(project.getFilesFolder(), fileSys.makeSingleLevelDir(params.fileName));
-  }
-  yield fs.unlink(filePath);
-  this.jsonResp(200,{message: "Deleted"});
-}
-
 exports.create = function * () {
+  var user = yield User.find(sessionHelper.getUserID(this.session));
+  var project = yield Project.create({status: Project.STATUS.ACTIVE});
+  yield user.addProject(project);
+
   var params = yield parse(this);
   var project = yield Project.find(this.params.id)
   var assets = yield fs.readdir(project.getAssetsFolder())
