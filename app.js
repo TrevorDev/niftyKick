@@ -58,7 +58,7 @@ app.post('/api/login', user.login)
 app.get('/api/project/:id/image', project.getImage)
 app.post('/api/project/:id/purchase', project.purchase)
 
-app.post('/api/project/:id/create', project.create)
+app.post('/api/project/create', project.create)
 
 app.get('/api/file/:id/download', file.download)
 

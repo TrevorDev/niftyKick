@@ -15,23 +15,31 @@ var upload = require('./../lib/upload');
 //UPLOADING ------------------------------------------------------------------
 exports.create = function * () {
   var user = yield User.find(sessionHelper.getUserID(this.session));
-  var project = yield Project.create({status: Project.STATUS.ACTIVE});
+  var project = null
+  var params = yield parse(this);
+  try{
+    project = yield Project.create({
+      type: params.type,
+      title: params.title,
+      price: params.price,
+      info: params.info,
+      description: params.description,
+      videoLink: params.videoLink,
+      displayImage: params.displayImageID,
+      status: Project.STATUS.ACTIVE});
+  }catch(e){
+    console.log(e)
+    this.jsonResp(400,{message: "Project with that name already exists"})
+    return
+  }
   yield user.addProject(project);
 
-  var params = yield parse(this);
-  var project = yield Project.find(this.params.id)
-  var assets = yield fs.readdir(project.getAssetsFolder())
-  var displayImage = ""
-  if (assets.length >= 0) {
-      displayImage = assets[0];
-  }
-  var files = yield fs.readdir(project.getFilesFolder())
+  var files = JSON.parse(params.files)
   for(var i = 0;i<files.length;i++) {
-		fileCreated = yield File.create({name: files[i], status: File.STATUS.ACTIVE})
+		fileCreated = yield File.create({name: files[i].name, fileStoreID: files[i].id, status: File.STATUS.ACTIVE})
     yield project.addFile(fileCreated);
   };
-  yield project.updateAttributes({type: params.type, title: params.title, price: params.price, info: params.info, description: params.description, videoLink: params.videoLink, displayImage: displayImage, status: Project.STATUS.ACTIVE});
-  this.jsonResp(200,{message: "Created", id: this.params.id})
+  this.jsonResp(200,{message: "Created", id: project.id})
 }
 
 exports.purchase = function * () {

@@ -8,6 +8,7 @@ var STATUS = {CREATING: "creating", ACTIVE: "active", DELETED: "deleted"}
 var File = sequelize.define('File', 
 	{
 		name: Sequelize.STRING,
+		fileStoreID: Sequelize.INTEGER,
 		status: {
 	    type:   Sequelize.ENUM,
 	    values: [STATUS.CREATING, STATUS.ACTIVE, STATUS.DELETED]

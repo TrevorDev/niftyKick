@@ -26,7 +26,7 @@ var Project = sequelize.define('Project',
 		info: Sequelize.STRING,
 		description: Sequelize.STRING,
 		videoLink: Sequelize.STRING,
-		displayImage: Sequelize.STRING,
+		displayImage: Sequelize.INTEGER,
 		status: {
 	    type:   Sequelize.ENUM,
 	    values: [STATUS.CREATING, STATUS.ACTIVE, STATUS.DELETED]

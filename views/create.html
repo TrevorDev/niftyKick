@@ -111,6 +111,7 @@
 <script>
 
 var projectFiles = []
+var displayImageID = null
 
 Dropzone.options.dropzone = {
   paramName: "file",
@@ -123,14 +124,15 @@ Dropzone.options.dropzone = {
     done();
   },
   success: function(file, resp, e){
-  	file.fileID = resp.data.files[0].id
-  	projectFiles.push(file.fileID)
+  	console.log(file)
+  	file.fileStoreData = {name:  file.name, id: resp.data.files[0].id}
+  	projectFiles.push(file.fileStoreData)
   	console.log(projectFiles)
   	file.previewElement.classList.add("dz-success");
   },
   removedfile: function(file) {
-  	if(file.fileID){
-  		projectFiles.splice(projectFiles.indexOf(file.fileID), 1);
+  	if(file.fileStoreData){
+  		projectFiles.splice(projectFiles.indexOf(file.fileStoreData), 1);
   		//TODO DELETE FILE FROM COYOTE
   	}
   	console.log(projectFiles)
@@ -152,27 +154,38 @@ Dropzone.options.dropzoneImg = {
   accept: function(file, done) {
     done();
   },
-  complete: function(file) {
+  success: function(file, resp, e){
+  	file.fileID = resp.data.files[0].id
+  	displayImageID = file.fileID
+  	file.previewElement.classList.add("dz-success");
   },
   removedfile: function(file) {
+  	displayImageID = null
     var _ref;
     if ((_ref = file.previewElement) != null) {
       _ref.parentNode.removeChild(file.previewElement);
     }
   }
 };
-//WTF WHY DID I NEED THIS????? FUCK DROPZONE DOCS
-//Dropzone.discover()
 
 $("#submit").click(function(){
-	var formInfo = $("#projectInfo").serialize();
+	var formInfo = $("#projectInfo").serializeArray();
+	console.log(formInfo)
+	formInfo.push({name: "displayImageID", value: displayImageID})
+	formInfo.push({name: "files", value: JSON.stringify(projectFiles)})
+	console.log(formInfo)
+	//formInfo.files = projectFiles
 	$.ajax({
      type: "POST",
      url: "/api/project/create",
-     data: formInfo, 
+     data: $.param(formInfo), 
      success: function(resp)
      {
+     	console.log(resp.data)
      	window.location.replace("/project/"+resp.data.id);
+     },
+     error: function(){
+     	showError("Project with that name already exists");
      }
   });
 })

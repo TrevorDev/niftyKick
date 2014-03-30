@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app="myApp">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,6 +63,21 @@
     {% block body %}{% endblock %}
 		<script src="/public/vendor/jquery/jquery-1.11.0.min.js"></script>
 		<script src="/public/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="/public/vendor/angular/angular.min.js"></script>
+    <script type="text/javascript">
+            var myApp = angular.module('myApp', [], function ($interpolateProvider) {
+                $interpolateProvider.startSymbol('[[');
+                $interpolateProvider.endSymbol(']]');
+            });
+    </script>
+
+    <script>
+      function showError(msg){
+        $("#errorDiv").show();
+        $("#errorMsg").html(msg);
+        window.scrollTo(0, 0);
+      }
+    </script>
     {% block script %}{% endblock %}
   </body>
 </html>
