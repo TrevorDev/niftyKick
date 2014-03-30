@@ -1,25 +1,54 @@
 {% extends 'layout.html' %}
 {% block body %}
-	    <div class="container-wide">
+	    <div ng-controller="browse" class="container-wide">
 	    	<div class="row">
 	    		
-	    			{% for project in projects %}
-	    				<a href="/project/{{project.id}}">
+	    			<div ng-repeat="project in projects" ng-cloak>
+	    				<a href="/project/[[project.id]]">
 		    			<div class="col-lg-2">
 		    				<div class="well" style="height: 300px;overflow:hidden;">
 		    				<div class="centered">
-			    				<img src="/api/project/{{project.id}}/image" style="height:100px;">
-			    				<h4>{{project.type}}:</h4>
-			    				<h4>{{project.title}}</h4>
-				    			<h4>${{project.price}}</h4>
-				    			<h4>{{project.info}}</h4>
-			    			</div>
-			    			
-			    			
+		    					<div ng-if="project.displayImage">
+				    				<img ng-src="{{coyoteURL}}file/[[project.displayImage]]" style="height:100px;">
+				    			</div>
+				    			<div ng-if="!project.displayImage">
+				    				<img ng-src="/public/custom/img/defaultProjImg.png" style="height:100px;">
+				    			</div>
+			    				<h4>[[project.type]]</h4>
+			    				<h4>[[project.title]]</h4>
+				    			<h4>$[[project.price]]</h4>
+				    			<h4>[[project.info]]</h4>
+			    			</div>			    			
 			    			</div>
 		    			</div>
 		    			</a>
-						{% endfor %}
+						</div>
 	    	</div><!-- /row -->
 			</div><!-- /hello -->
+{% endblock %}
+
+{% block script %}
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA5jK4WtJObHJwEB0b6efS7FMlXiQxXv1Y&sensor=false"></script>
+<script type="text/javascript">
+function browse($scope, $http) {
+
+	$scope.projects = [];
+  
+  $scope.getProjects = function(){
+		$http({
+		    url: "/api/project/browse",
+		    method: "get"
+		}).success(function(resp, status, headers, config) {
+		    $scope.projects = resp.data.projects
+		}).error(function(data, status, headers, config) {
+			showError("An error has occured please try again later")
+		});
+		return false;
+	}
+	$scope.getProjects()
+
+}
+			
+</script>
 {% endblock %}

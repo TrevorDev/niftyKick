@@ -46,7 +46,7 @@ app.get('/login', defaultPageLoad('login'))
 app.get('/faq', defaultPageLoad('faq'))
 app.get('/create', defaultPageLoad('create', true))
 app.get('/dashboard', defaultPageLoad('dashboard', true))
-app.get('/browse', browse)
+app.get('/browse', defaultPageLoad('browse'))
 app.get('/project/:id', project.show)
 app.get('/logout', logout)
 app.get('/public/*', serve('.'))
@@ -59,6 +59,7 @@ app.get('/api/project/:id/image', project.getImage)
 app.post('/api/project/:id/purchase', project.purchase)
 
 app.post('/api/project/create', project.create)
+app.get('/api/project/browse', project.browse)
 
 app.get('/api/file/:id/download', file.download)
 
@@ -80,12 +81,6 @@ function defaultPageLoad(pageName, requiresLogin) {
 function *logout() {
 	this.session = null
 	this.redirect('/')
-}
-
-function *browse() {
-	var temp = sessionHelper.commonTemplate(this.session)
-	temp.projects = yield Project.findAll({where: {status: Project.STATUS.ACTIVE}})
-	this.body = yield render('browse',temp)
 }
 
 

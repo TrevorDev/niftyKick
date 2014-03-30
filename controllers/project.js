@@ -67,6 +67,11 @@ exports.getImage = function * () {
   }
 }
 
+exports.browse = function *(){
+  var projects = yield Project.findAll({where: {status: Project.STATUS.ACTIVE}})
+  this.jsonResp(200,{projects: projects})
+}
+
 exports.show = function * () {
   var project = yield Project.find(this.params.id);
   var files = yield project.getFiles();
