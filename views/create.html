@@ -63,7 +63,7 @@
 	    </div> <!-- /container-wide -->
 		</form>
 
-			<!-- <div class="container-wide">
+			<div class="container-wide">
 	    	<div class="row">
     				<div class="col-lg-8 col-lg-offset-2">
 	    				<h1>Step 3 - Upload project image</h1>
@@ -74,7 +74,7 @@
 							</div>
 					  </div>
     		</div>
-	    </div>  -->
+	    </div> 
 
 
 
@@ -114,15 +114,13 @@ var projectFiles = []
 
 Dropzone.options.dropzone = {
   paramName: "file",
-  maxFilesize: 1000, // MB
+  maxFilesize: 250, // MB
   addRemoveLinks: true,
   uploadMultiple: true,//SHOULD BE TRUE SEE LINE BELOW (THIS STILL DOESNT SEND MULTIPLE FOR SOME REASON)
   //parallelUploads: 1,//this should be unlimited but causes coyote or dropzone error (either me or that dropzoneguy cant code) I WAS RIGHT! THAT STUPD DROPZONE GUY, HATE THAT GUY
-  url: "http://localhost:3008/upload?account=niftyKick",
+  url: "{{coyoteURL}}file/upload?account=niftyKick",
   accept: function(file, done) {
     done();
-  },
-  complete: function(file) {
   },
   success: function(file, resp, e){
   	file.fileID = resp.data.files[0].id
@@ -133,44 +131,37 @@ Dropzone.options.dropzone = {
   removedfile: function(file) {
   	if(file.fileID){
   		projectFiles.splice(projectFiles.indexOf(file.fileID), 1);
+  		//TODO DELETE FILE FROM COYOTE
   	}
   	console.log(projectFiles)
   	var _ref;
     if ((_ref = file.previewElement) != null) {
       _ref.parentNode.removeChild(file.previewElement);
     }
-  	//TODO DELETE FILE FROM COYOTE
   }
 };
 
-// Dropzone.options.dropzoneImg = {
-//   paramName: "file",
-//   maxFiles: 1,
-//   maxFilesize: 1, // MB
-//   addRemoveLinks: true,
-//   acceptedFiles: "image/jpeg",
-//   url: "/api/project/"+resp.data.id+"/fileUpload/projectImage/",
-//   accept: function(file, done) {
-//     done();
-//   },
-//   complete: function(file) {
-//   },
-//   removedfile: function(file) {
-//   	$.ajax({
-// 	     type: "POST",
-// 	     url: "/api/project/"+resp.data.id+"/deleteTempFile",
-// 	     data: {fileName: file.name, projectImage: true}, 
-// 	     success: function(resp)
-// 	     {
-// 	     }
-// 	  });
-//     var _ref;
-//     if ((_ref = file.previewElement) != null) {
-//       _ref.parentNode.removeChild(file.previewElement);
-//     }
-//   }
-// };
-//WTF WHY DO I NEED THIS????? FUCK DROPZONE DOCS
+Dropzone.options.dropzoneImg = {
+  paramName: "file",
+  maxFiles: 1,
+  maxFilesize: 1, // MB
+  addRemoveLinks: true,
+  uploadMultiple: true,
+  acceptedFiles: "image/jpeg",
+  url: "{{coyoteURL}}file/upload?account=niftyKick&public=true",
+  accept: function(file, done) {
+    done();
+  },
+  complete: function(file) {
+  },
+  removedfile: function(file) {
+    var _ref;
+    if ((_ref = file.previewElement) != null) {
+      _ref.parentNode.removeChild(file.previewElement);
+    }
+  }
+};
+//WTF WHY DID I NEED THIS????? FUCK DROPZONE DOCS
 //Dropzone.discover()
 
 $("#submit").click(function(){

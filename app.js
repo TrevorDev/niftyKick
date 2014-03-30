@@ -11,6 +11,7 @@ var views = require('co-views')
 var parse = require('co-body')
 var koa = require('koa')
 var swig = require('swig')
+var request = require('request');
 var app = koa()
 
 var Sequelize = Database.getSequelize()
@@ -25,8 +26,9 @@ var User = require('./models/user')
 var File = require('./models/file')
 var Purchase = require('./models/purchase')
 
-var coyote = require('file-e-coyote')
+var coyote = require('file-e-coyote')//TODO move this to its on project/vm
 coyote.startServer(config.coyoteOptions)
+request.post(config.coyoteAccount.URL+"account/create?masterSecret="+config.coyoteOptions.masterSecret+"&name="+config.coyoteAccount.name+"&token="+config.coyoteAccount.token)
 sequelize.sync() //{ force: true }
 
 //REMOVE IN PRODUCTION??
@@ -68,7 +70,10 @@ function defaultPageLoad(pageName, requiresLogin) {
 			this.redirect('/login')
 			return
 		}
-		this.body = yield render(pageName, sessionHelper.commonTemplate(this.session))
+
+		var temp = sessionHelper.commonTemplate(this.session);
+		temp.coyoteURL = config.coyoteAccount.URL
+		this.body = yield render(pageName, temp)
 	}
 }
 
