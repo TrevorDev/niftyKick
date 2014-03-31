@@ -3,6 +3,7 @@ var config = require('./lib/config')
 var Database = require('./lib/database')
 var sessionHelper = require('./lib/sessionHelper')
 var jsonResp = require('./lib/jsonResp')
+var coyoteClient = require('./lib/coyoteClient')
 var logger = require('koa-logger')
 var router = require('koa-router')
 var serve = require('koa-static')
@@ -28,7 +29,7 @@ var Purchase = require('./models/purchase')
 
 var coyote = require('file-e-coyote')//TODO move this to its on project/vm
 coyote.startServer(config.coyoteOptions)
-request.post(config.coyoteAccount.URL+"account/create?masterSecret="+config.coyoteOptions.masterSecret+"&name="+config.coyoteAccount.name+"&token="+config.coyoteAccount.token)
+coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
 
 //REMOVE IN PRODUCTION??
@@ -47,7 +48,7 @@ app.get('/faq', defaultPageLoad('faq'))
 app.get('/create', defaultPageLoad('create', true))
 app.get('/dashboard', defaultPageLoad('dashboard', true))
 app.get('/browse', defaultPageLoad('browse'))
-app.get('/project/:id', project.show)
+app.get('/project/:id', defaultPageLoad('project'))
 app.get('/logout', logout)
 app.get('/public/*', serve('.'))
 
@@ -55,13 +56,13 @@ app.get('/public/*', serve('.'))
 app.post('/api/createAccount', user.createAccount)
 app.post('/api/login', user.login)
 
+app.post('/api/project/create', project.create)
+app.get('/api/project/browse', project.browse)
+app.get('/api/project/:id', project.getProject)
 app.get('/api/project/:id/image', project.getImage)
 app.post('/api/project/:id/purchase', project.purchase)
 
-app.post('/api/project/create', project.create)
-app.get('/api/project/browse', project.browse)
-
-app.get('/api/file/:id/download', file.download)
+app.get('/api/file/:id/requestDownload', file.requestDownload)
 
 
 //PAGE HANDLERS
@@ -74,6 +75,7 @@ function defaultPageLoad(pageName, requiresLogin) {
 
 		var temp = sessionHelper.commonTemplate(this.session);
 		temp.coyoteURL = config.coyoteAccount.URL
+		temp.public_stripe_api_key = config.public_stripe_api_key
 		this.body = yield render(pageName, temp)
 	}
 }

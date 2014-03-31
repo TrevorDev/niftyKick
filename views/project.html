@@ -1,38 +1,44 @@
 {% extends 'layout.html' %}
 {% block body %}
-	    <div class="container-wide">
+	    <div class="container-wide" ng-controller="project">
 	    	<div class="row">
-	    		<div class="col-lg-8 col-lg-offset-2">
-	    			<h1>{{project.type}}: {{project.title}}</h1>
+	    		<div class="col-lg-8 col-lg-offset-2" ng-if="project != null" ng-cloak>
+	    			<h1>[[project.type]]: [[project.title]]</h1>
 
-	    			{% if project.price == '0' %}
+	    			<div ng-if="project.price == 0">
 	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> This project is free! Download files below.</div>
-	    			{% elseif owned %}
-	    				<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> You own {{project.title}}! Download files below.</div>
-	    			{% elseif email %}
-	    				<div class="btn-green" id="buyButton" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div>
-	    			{% else %}
-	    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
-	    			{% endif %}
+	    			</div>
 
-					  
+	    			<div ng-if="project.price != 0">
+	    				<div ng-if="project.owned">
+	    					<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> You own {{project.title}}! Download files below.</div>
+	    				</div>
+
+	    				<div ng-if="!project.owned">
+			    			{% if email %}
+			    				<div class="btn-green" ng-click="buy()" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div>
+			    			{% else %}
+			    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
+			    			{% endif %}
+		    			</div>
+	    			</div>
 
 	    			<br>
-	    			<img src="/api/project/{{project.id}}/image" style="height:300px">
+	    			<div ng-if="project.displayImage">
+	    				<img ng-src="{{coyoteURL}}file/[[project.displayImage]]" style="height:300px">
+	    			</div>
 	    			<h2>Info</h2>
-	    			<h4>{{project.info}}</h4>
+	    			<h4>[[project.info]]</h4>
 	    			<h2>Description</h2>
-	    			<h4>{{project.description | escape |replace('\n', "<br>", 'g')|raw}}</h4>
+	    			<h4 style="white-space:pre-wrap;">[[project.description]]</h4>
 
 	    			<h2>Files: </h2>
-	    			{% for file in files %}
+	    			<div ng-repeat="file in project.files">
 	    				<li>
-	    					{% if project.price == '0' || owned %}
-	    						<a href="/api/file/{{file.id}}/download"><div class="btn-green" style="padding: 2px;margin:5px;">Download Now</div></a>
-	    					{% endif %}
-	    					{{file.name}}
+	    						<a ng-if="project.price == 0 || project.owned" ng-click="requestDownload(file.id)"><div class="btn-green" style="padding: 2px;margin:5px;">Download Now</div></a>
+	    					[[file.name]]
 	    				</li>
-	    			{% endfor %}
+	    			</div>
 	    		</div><!-- /col-lg-8 -->
 	    	</div><!-- /row -->
 			</div><!-- /hello -->
@@ -40,15 +46,20 @@
 
 {% block script %}
 <script src="https://checkout.stripe.com/checkout.js"></script>
-<script>
-  var handler = StripeCheckout.configure({
+<script type="text/javascript">
+function project($scope, $http) {
+	
+	var projectID = getProjectID()
+	$scope.project = null;
+
+	var handler = StripeCheckout.configure({
     key: '{{public_stripe_api_key}}',
     email: '{{email}}',
     //image: '/square-image.png',
     token: function(token, args) {
       $.ajax({
 		     type: "POST",
-		     url: "/api/project/{{project.id}}/purchase",
+		     url: "/api/project/"+projectID+"/purchase",
 		     data: {token: token}, 
 		     success: function(data)
 		     {
@@ -61,15 +72,50 @@
 	  	 });
     }
   });
-
-  document.getElementById('buyButton').addEventListener('click', function(e) {
-    // Open Checkout with further options
+  
+	$scope.buy = function(){
+		console.log("hit")
+		// Open Checkout with further options
     handler.open({
       name: 'Nifty Kick',
-      description: '{{project.title}} (${{project.price}})',
-      amount: {{project.price*100}}
+      description: project.title+" ($"+project.price+")",
+      amount: project.price*100
     });
-    e.preventDefault();
-  });
+	}
+
+	$scope.requestDownload = function(fileID){
+		$http({
+		    url: "/api/file/"+fileID+"/requestDownload",
+		    method: "get"
+		}).success(function(resp, status, headers, config) {
+		    var token = resp.data.token
+		    var fileStoreID = resp.data.fileStoreID
+		    var fileName = resp.data.fileName
+		    window.location="{{coyoteURL}}file/"+fileStoreID+"?requestToken="+token+"&filename="+fileName
+		}).error(function(data, status, headers, config) {
+			showError("An error has occured please try again later")
+		});
+		return false;
+	}
+
+  $scope.getProject = function(){
+		$http({
+		    url: "/api/project/"+projectID,
+		    method: "get"
+		}).success(function(resp, status, headers, config) {
+		    $scope.project = resp.data.project
+		}).error(function(data, status, headers, config) {
+			showError("An error has occured please try again later")
+		});
+		return false;
+	}
+	$scope.getProject()
+}
+
+function getProjectID(){
+	var pageUrl = window.location.href
+	var queryLocation = pageUrl.indexOf("?")
+	return pageUrl.substring(pageUrl.lastIndexOf("/") + 1, queryLocation != -1 ? queryLocation : pageUrl.length);
+}
 </script>
 {% endblock %}

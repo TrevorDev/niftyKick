@@ -9,6 +9,7 @@
 	"private": true,
 	"dependencies": {
 		"request": "x.x",
+		"thunkify": "x.x",
 		"file-e-coyote": "x.x",
 		"co": "x.x",
 		"nodemailer": "x.x",
