@@ -31,7 +31,7 @@ var coyote = require('file-e-coyote')//TODO move this to its on project/vm
 coyote.startServer(config.coyoteOptions)
 coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
-
+//destroyAll()
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
 
@@ -86,6 +86,10 @@ function *logout() {
 }
 
 
+function destroyAll() {
+	sequelize.sync({force: true})
+	coyoteClient.destroyAll()
+}
 
 app.listen(config.appPort)
 console.log('Started ----------------------------------------------')
