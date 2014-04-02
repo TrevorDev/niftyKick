@@ -56,6 +56,8 @@ app.get('/public/*', serve('.'))
 app.post('/api/createAccount', user.createAccount)
 app.post('/api/login', user.login)
 
+app.get('/api/user/financialData', user.getFinancialData)
+
 app.post('/api/project/create', project.create)
 app.get('/api/project/browse', project.browse)
 app.get('/api/project/:id', project.getProject)

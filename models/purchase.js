@@ -5,7 +5,7 @@ var sequelize = Database.getSequelizeInstance();
 
 var Purchase = sequelize.define('Purchase', 
 	{
-		price_paid: Sequelize.FLOAT
+		pricePaid: Sequelize.FLOAT
 	}, {
 		classMethods: {
     	

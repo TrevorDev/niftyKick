@@ -3,11 +3,11 @@
 	    <div ng-controller="projectDash" class="container-wide">
 	    	<div class="row">
 	    		<h2>
-	    			<div class="col-lg-4">
-	    				Your balance: $1000
+	    			<div class="col-lg-4" ng-cloak>
+	    				Your balance: $[[balance]]
 	    			</div>
-	    			<div class="col-lg-4">
-	    				Combined sales count: 37
+	    			<div class="col-lg-4" ng-cloak>
+	    				Combined sales count: [[sales]]
 	    			</div>
 	    			<div class="col-lg-4">
 		    			<div class="btn-green" style="padding: 10px;margin:5px;margin-top:-10px;">Request Payment</div>
@@ -44,22 +44,35 @@
 <script type="text/javascript">
 function projectDash($scope, $http) {
 
-	$scope.projects = [];
-  
+	$scope.projects = []
+  $scope.balance = null
+  $scope.sales = null
   $scope.getProjects = function(){
-
 		$http({
-		    url: "/api/project/browse",
+		    url: "/api/project/browse?userID={{userID}}",
 		    method: "get"
 		}).success(function(resp, status, headers, config) {
-				console.log(resp.data.projects)
 		    $scope.projects = resp.data.projects
 		}).error(function(data, status, headers, config) {
 			showError("An error has occured please try again later")
 		});
 		return false;
 	}
+
+	$scope.getFinancialData = function(){
+		$http({
+		    url: "/api/user/financialData",
+		    method: "get"
+		}).success(function(resp, status, headers, config) {
+		    $scope.balance = resp.data.balance
+		    $scope.sales = resp.data.sales
+		}).error(function(data, status, headers, config) {
+			showError("An error has occured please try again later")
+		});
+		return false;
+	}
 	$scope.getProjects()
+	$scope.getFinancialData()
 
 }
 </script>

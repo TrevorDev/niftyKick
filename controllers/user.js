@@ -44,3 +44,15 @@ exports.login = function *() {
 		this.jsonResp(400,{message: "Invalid username/password"})
 	}
 }
+
+exports.getFinancialData = function *() {
+	var userID = sessionHelper.getUserID(this.session)
+	if(userID == null){
+		this.jsonResp(401,{message: "Not authenticated"})
+		return
+	}
+	var user = yield User.find(userID)
+	var balance = yield user.getBalance()
+	var sales = yield user.getSales()
+	this.jsonResp(200,{balance: balance, sales: sales})
+}

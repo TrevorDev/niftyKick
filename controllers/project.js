@@ -68,12 +68,17 @@ exports.getImage = function * () {
 }
 
 exports.browse = function *(){
-  var projects = yield Project.findAll({where: {status: Project.STATUS.ACTIVE}})
+  scope = {}
+  scope.where = {status: Project.STATUS.ACTIVE}
+  if(this.query.userID){
+    scope.where.UserID = this.query.userID
+  }
+  var projects = yield Project.findAll(scope)
   this.jsonResp(200,{projects: projects})
 }
 
 exports.getProject = function * () {
-  var project = yield Project.find(this.params.id)
+  var project = yield Project.find({where:{id: this.params.id, status: Project.STATUS.ACTIVE}})
   var files = yield project.getFiles()
   if(project == null){
     this.jsonResp(404,{message: "Project not found"})
