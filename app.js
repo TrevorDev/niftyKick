@@ -34,7 +34,7 @@ coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
 //destroyAll()
 //REMOVE IN PRODUCTION??
-swig.setDefaults({ cache: false })
+swig.setDefaults(config.templateOptions)
 
 //ROUTES
 app.keys = [config.sessionSecret]
