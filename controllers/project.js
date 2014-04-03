@@ -93,6 +93,7 @@ exports.getProject = function * () {
     displayProject.displayImage = project.displayImage
     displayProject.info = project.info
     displayProject.videoLink = project.videoLink
+    displayProject.id = project.id
 
     displayProject.files = files
     displayProject.owned = false

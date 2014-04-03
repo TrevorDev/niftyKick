@@ -17,11 +17,12 @@
     <link href="/public/vendor/bootstrap/css/main.css" rel="stylesheet">
     <link href="/public/vendor/bootstrap/css/font-awesome.min.css" rel="stylesheet">
 
-    <script src="/public/vendor/bootstrap/js/bootstrap.js"></script>
     <script src="/public/vendor/jquery/jquery-1.11.0.min.js"></script>
+    <script src="/public/vendor/bootstrap/js/bootstrap.js"></script>
     <script src="/public/vendor/angular/angular.min.js"></script>
+    <script src="/public/vendor/angular-encode-uri/angular-encode-uri.min.js"></script>
     <script type="text/javascript">
-            var myApp = angular.module('myApp', [], function ($interpolateProvider) {
+            var myApp = angular.module('myApp', ['rt.encodeuri'], function ($interpolateProvider) {
                 $interpolateProvider.startSymbol('[[');
                 $interpolateProvider.endSymbol(']]');
             });
@@ -71,6 +72,7 @@
     <div id="errorDiv" class="alert alert-warning" style="display: none">Error: <span id="errorMsg"></span></div>
 
     {% block body %}{% endblock %}
+    
     <script>
       function showError(msg){
         $("#errorDiv").show();
