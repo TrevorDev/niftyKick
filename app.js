@@ -32,7 +32,7 @@ var coyote = require('file-e-coyote')//TODO move this to its on project/vm
 coyote.startServer(config.coyoteOptions)
 coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
-destroyAll()
+//destroyAll()
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
 
