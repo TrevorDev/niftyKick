@@ -1,22 +1,22 @@
 {% extends 'layout.html' %}
 {% block body %}
 	    <div ng-controller="projectDash" class="container-wide">
-	    	<div class="row">
+	    	<div class="row" ng-cloak>
 	    		<h2>
-	    			<div class="col-lg-4" ng-cloak>
+	    			<div class="col-lg-4">
 	    				Your balance: $[[balance]]
 	    			</div>
-	    			<div class="col-lg-4" ng-cloak>
+	    			<div class="col-lg-4">
 	    				Combined sales count: [[sales]]
 	    			</div>
 	    			<div class="col-lg-4">
-		    			<div class="btn-green" style="padding: 10px;margin:5px;margin-top:-10px;">Request Payment</div>
+		    			<!--<div class="btn-green" style="padding: 10px;margin:5px;margin-top:-10px;">Request Payment</div>-->
 		    		</div>
 		    	</h2>
 	    	</div>
 	    	<hr>
-	    	<div class="row">
-    			<div ng-repeat="project in projects" ng-cloak>
+	    	<div class="row" ng-cloak>
+    			<div ng-repeat="project in projects">
     				<a href="/project/[[project.id]]">
 		    			<div class="col-lg-2">
 		    				<div class="well" style="height: 300px;overflow:hidden;">

@@ -6,6 +6,7 @@ var sequelize = Database.getSequelizeInstance();
 
 var Project = require("./project")
 var Purchase = require("./purchase")
+var Payout = require("./payout")
 
 var User = sequelize.define('User', 
 	{
@@ -16,7 +17,12 @@ var User = sequelize.define('User',
 	  	},
 	  	unique: true
 	  },
-	  password: Sequelize.STRING
+	  password: Sequelize.STRING,
+	  firstName: Sequelize.STRING,
+	  lastName: Sequelize.STRING,
+	  bankToken: Sequelize.STRING,
+	  phone: Sequelize.STRING,
+	  address: Sequelize.STRING
 	}, {
 		classMethods: {
     	createEncrypted: function*(attributes){ 
@@ -43,7 +49,7 @@ var User = sequelize.define('User',
 			},
 			getBalance: function*(){
 				var result = yield sequelize.query('select SUM(Purchases.pricePaid) as balance from Purchases where Purchases.ProjectId in (select Projects.id from Users JOIN Projects ON Users.id = Projects.UserId and Users.id = ?)', null, { raw: true }, [this.id])
-    		return result[0].balance;
+    		return result[0].balance ? result[0].balance : 0
 			},
 			getSales: function*(){
 				var result = yield sequelize.query('select COUNT(Purchases.id) as sales from Purchases where Purchases.ProjectId in (select Projects.id from Users JOIN Projects ON Users.id = Projects.UserId and Users.id = ?)', null, { raw: true }, [this.id])
@@ -56,5 +62,7 @@ User.hasMany(Project)
 Project.belongsTo(User)
 User.hasMany(Purchase)
 Purchase.belongsTo(User)
+User.hasMany(Payout)
+Payout.belongsTo(User)
 
 module.exports = User;

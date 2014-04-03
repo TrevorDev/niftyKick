@@ -26,12 +26,13 @@ var Project = require('./models/project')
 var User = require('./models/user')
 var File = require('./models/file')
 var Purchase = require('./models/purchase')
+var Payout = require('./models/payout')
 
 var coyote = require('file-e-coyote')//TODO move this to its on project/vm
 coyote.startServer(config.coyoteOptions)
 coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
-//destroyAll()
+destroyAll()
 //REMOVE IN PRODUCTION??
 swig.setDefaults({ cache: false })
 
