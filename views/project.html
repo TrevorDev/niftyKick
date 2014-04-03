@@ -11,14 +11,14 @@
 
 	    			<div ng-if="project.price != 0">
 	    				<div ng-if="project.owned">
-	    					<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> You own {{project.title}}! Download files below.</div>
+	    					<div class="alert alert-success" style="margin-bottom: 15px; cursor: default;"> You own [[project.title]]! Download files below.</div>
 	    				</div>
 
 	    				<div ng-if="!project.owned">
 			    			{% if email %}
-			    				<div class="btn-green" ng-click="buy()" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div>
+			    				<div class="btn-green" ng-click="buy()" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> $[[project.price]] Get It Now!</div>
 			    			{% else %}
-			    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> ${{project.price}} Get It Now!</div></a>
+			    				<a href="/login?redirect={{('/project/'+project.id) | url_encode }}&message={{ "Please login or signup to purchase" | url_encode }}"><div class="btn-green" style="margin-bottom: 15px"><i class="fa fa-shopping-cart"></i> $[[project.price]] Get It Now!</div></a>
 			    			{% endif %}
 		    			</div>
 	    			</div>
