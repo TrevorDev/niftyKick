@@ -78,7 +78,7 @@ function defaultPageLoad(pageName, requiresLogin) {
 
 		var temp = sessionHelper.commonTemplate(this.session);
 		temp.coyoteURL = config.coyoteAccount.URL
-		temp.public_stripe_api_key = config.public_stripe_api_key
+		temp.public_stripe_api_key = config.payment.public_stripe_api_key
 		this.body = yield render(pageName, temp)
 	}
 }
