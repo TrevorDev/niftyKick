@@ -2,3 +2,4 @@ lib/config.js
 node_modules/
 coyoteFiles/
 userFiles/projects/
+sslKeys/
