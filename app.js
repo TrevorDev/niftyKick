@@ -97,6 +97,6 @@ function destroyAll() {
 	coyoteClient.destroyAll()
 }
 
-var server = config.sslOptions ? https.createServer(config.sslOptions, app.callback()) : http.createServer(app.callback());
+var server = http.createServer(app.callback())
 server.listen(config.appPort);
 console.log('Started ----------------------------------------------')
