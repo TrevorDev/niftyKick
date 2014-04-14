@@ -48,8 +48,10 @@ var User = sequelize.define('User',
     		return purchase;
 			},
 			getBalance: function*(){
-				var result = yield sequelize.query('select SUM(Purchases.pricePaid) as balance from Purchases where Purchases.ProjectId in (select Projects.id from Users JOIN Projects ON Users.id = Projects.UserId and Users.id = ?)', null, { raw: true }, [this.id])
-    		return result[0].balance ? result[0].balance : 0
+				var result = yield sequelize.query('select COUNT(*) as count, SUM(Purchases.pricePaid) as balance from Purchases where Purchases.ProjectId in (select Projects.id from Users JOIN Projects ON Users.id = Projects.UserId and Users.id = ?)', null, { raw: true }, [this.id])
+    		var amount = result[0].balance ? result[0].balance : 0
+    		var excludeFees = (amount*0.92) - (0.30*result[0].count)
+    		return excludeFees
 			},
 			getSales: function*(){
 				var result = yield sequelize.query('select COUNT(Purchases.id) as sales from Purchases where Purchases.ProjectId in (select Projects.id from Users JOIN Projects ON Users.id = Projects.UserId and Users.id = ?)', null, { raw: true }, [this.id])
