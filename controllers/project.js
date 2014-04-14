@@ -47,7 +47,7 @@ exports.purchase = function * () {
   try{
     var project = yield Project.find(this.params.id)
     var amountPaid = project.price*100
-    var paid = yield payment.charge(params.token.id, amountPaid)
+    var paid = yield payment.charge(params.token.id, amountPaid, "Purchase project: "+project.title)
     var user = yield User.find(sessionHelper.getUserID(this.session))
     yield user.purchaseProject(project)
     this.jsonResp(200,{message: "Payment success"})
