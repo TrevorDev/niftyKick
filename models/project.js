@@ -42,6 +42,7 @@ var Project = sequelize.define('Project',
 )
 
 Project.hasMany(File)
+File.belongsTo(Project)
 Project.hasMany(Purchase)
 
 

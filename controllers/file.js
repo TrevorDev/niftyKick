@@ -15,7 +15,9 @@ var coyoteClient = require('./../lib/coyoteClient')
 exports.requestDownload = function * () {
   var file = yield File.find(this.params.id)
   var accessAllowed = false
-  if(file.price==0){
+  var project = yield file.getProject()
+  var user = {email: "notLoggedIn"}
+  if(project.price==0){
   	accessAllowed = true
   }else{
     var user = yield User.find(sessionHelper.getUserID(this.session))
@@ -28,7 +30,6 @@ exports.requestDownload = function * () {
    this.jsonResp(403,{message: "you dont have permission for this file"}) 
    return
   }
-  var project = yield Project.find(file.ProjectId)
   var token = yield coyoteClient.requestDownloadToken(file.fileStoreID, user.email.replace(/@/g, "_at_").replace(/\./g, "_dot_"), 30000)
 	this.jsonResp(200,{token: token, fileStoreID: file.fileStoreID, fileName: file.name})
 }
