@@ -213,8 +213,12 @@ a:after {
 
 /* Image Opacity */
 .grid img {
-    opacity: .7;
+    opacity: 0.8;
+    box-shadow: 3px 3px 2px #888;
 }
 .grid img:hover {
     opacity: 1;
+    position: relative;
+		top: -10px;
+    box-shadow: 7px 7px 5px #888;
 }
