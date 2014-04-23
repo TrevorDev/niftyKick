@@ -123,12 +123,15 @@ Dropzone.options.dropzone = {
   accept: function(file, done) {
     done();
   },
-  success: function(file, resp, e){
-  	console.log(file)
-  	file.fileStoreData = {name:  file.name, id: resp.data.files[0].id}
-  	projectFiles.push(file.fileStoreData)
+  successmultiple: function(files, resp, e){
+  	console.log(resp)
+  	console.log(e)
+  	for (var i in files) {
+  		var file = files[i]
+  		file.fileStoreData = {name:  file.name, id: resp.data.files[i].id}
+	  	projectFiles.push(file.fileStoreData)
+  	}
   	console.log(projectFiles)
-  	file.previewElement.classList.add("dz-success");
   },
   removedfile: function(file) {
   	if(file.fileStoreData){
@@ -155,6 +158,7 @@ Dropzone.options.dropzoneImg = {
     done();
   },
   success: function(file, resp, e){
+  	//TODO maybe add multiple support in future as above???
   	file.fileID = resp.data.files[0].id
   	displayImageID = file.fileID
   	file.previewElement.classList.add("dz-success");
