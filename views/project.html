@@ -91,7 +91,7 @@ function project($scope, $http) {
 		    var token = resp.data.token
 		    var fileStoreID = resp.data.fileStoreID
 		    var fileName = resp.data.fileName
-		    window.location="{{coyoteURL}}file/"+fileStoreID+"?requestToken="+token+"&filename="+fileName
+		    window.location="{{coyoteURL}}file/"+fileStoreID+"?requestToken="+token+"&filename="+fileName+'&download=true'
 		}).error(function(data, status, headers, config) {
 			showError("An error has occured please try again later")
 		});
