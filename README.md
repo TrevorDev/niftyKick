@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/trevordev/niftykick.png?label=ready&title=Ready)](https://waffle.io/trevordev/niftykick)
 BUY/SELL DIGITAL GOODS WEBSITE
 ======================================
 
