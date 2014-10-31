@@ -32,6 +32,7 @@ var Purchase = require('./models/purchase')
 var Payout = require('./models/payout')
 
 var coyote = require('file-e-coyote')//TODO move this to its on project/vm
+console.log(config.coyoteOptions)
 coyote.startServer(config.coyoteOptions)
 coyoteClient.createAccount()
 sequelize.sync() //{ force: true }
